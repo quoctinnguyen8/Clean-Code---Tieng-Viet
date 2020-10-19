@@ -38,7 +38,7 @@ public class DeviceController {
 }
 ```
 Vấn đề với những cách tiếp cận này là chúng gây lộn xộn cho người gọi. Người gọi phải kiểm tra lỗi ngay sau cuộc gọi. Thật không may, người gọi nó rất dễ quên. Đối với trường hợp này, tốt hơn là bạn nên ném một ngoại lệ khi bạn gặp lỗi. Mã gọi sạch hơn. Logic của nó không bị che khuất bởi việc xử lý lỗi.   
-Listing 7-2 hiển thị mã sau khi chúng tôi đã chọn đưa ra các ngoại lệ trong các phương pháp có thể phát hiện lỗi.  
+Listing 7-2 hiển thị mã sau khi chúng ta đã chọn đưa ra các ngoại lệ trong các phương pháp có thể phát hiện lỗi.  
 
 **Listing 7-2**  
 **DeviceController.java (with exceptions)**  
@@ -85,7 +85,7 @@ public void retrieveSectionShouldThrowOnInvalidFileName() {
 Việc kiểm tra thúc đẩy chúng ta tạo ra hàm này:
 ```java
 public List<RecordedGrip> retrieveSection(String sectionName) { 
-    // Fake return cho đến khi chúng tôi có một triển khai thực sự
+    // Fake return cho đến khi chúng ta có một triển khai thực sự
     return new ArrayList<RecordedGrip>();
 }
 ```
@@ -118,7 +118,7 @@ Cố gắng viết các bài kiểm tra buộc xảy ra các trường hợp ngo
 ## Sử dụng Unchecked Exceptions
 Cuộc tranh luận kết thúc. Trong nhiều năm, các lập trình viên Java đã tranh luận về lợi ích và mối quan hệ của các **checked exceptions**. Khi các **checked exceptions** được giới thiệu trong phiên bản Java đầu tiên, chúng dường như là một ý tưởng tuyệt vời. Hàm của mọi phương thức sẽ liệt kê tất cả các ngoại lệ mà nó có thể chuyển cho trình gọi của nó. Hơn nữa, những ngoại lệ này là một phần của loại phương pháp. Mã của bạn thực sự sẽ không biên dịch nếu hàm không khớp với những gì mã của bạn đã viết.
 
-Vào thời điểm đó, chúng tôi nghĩ rằng các **checked exceptions** là một ý tưởng tuyệt vời; và tất nhiên, chúng có thể mang lại *một số* lợi ích. Tuy nhiên, rõ ràng là giờ đây chúng không còn cần thiết để phát triển phần mềm. C# không có các **checked exceptions** và bất chấp mọi nỗ lực, C++ cũng không. Python hay Ruby cũng vậy. Tuy nhiên, có thể viết phần mềm bằng tất cả các ngôn ngữ này. Do đó, chúng tôi phải **quyết định - thực sự - liệu** các **checked exceptions** có xứng đáng với cái giá của chúng hay không.
+Vào thời điểm đó, chúng ta nghĩ rằng các **checked exceptions** là một ý tưởng tuyệt vời; và tất nhiên, chúng có thể mang lại *một số* lợi ích. Tuy nhiên, rõ ràng là giờ đây chúng không còn cần thiết để phát triển phần mềm. C# không có các **checked exceptions** và bất chấp mọi nỗ lực, C++ cũng không. Python hay Ruby cũng vậy. Tuy nhiên, có thể viết phần mềm bằng tất cả các ngôn ngữ này. Do đó, chúng ta phải **quyết định - thực sự - liệu** các **checked exceptions** có xứng đáng với cái giá của chúng hay không.
 ### Định nghĩa lớp Exception theo nhu cầu của người gọi
 Giá bao nhiêu? Giá của các trường hợp **checked exceptions** là vi phạm nguyên tắc Mở/Đóng. Nếu bạn ném một **checked exceptions** từ một phương thức trong mã của bạn và lệnh **catch** ở ba mức trên, *bạn phải khai báo ngoại lệ đó trong signature của mỗi phương thức giữa bạn và lệnh* **catch**. Điều này có nghĩa là một thay đổi ở cấp thấp của phần mềm có thể buộc phải thay đổi signature ở nhiều cấp cao hơn. Các mô-đun đã thay đổi phải được xây dựng lại và triển khai lại, mặc dù không có gì họ quan tâm đến đã thay đổi.
 
@@ -187,9 +187,9 @@ public class LocalPort {
     ...
 }
 ```
-Các trình gói như chúng tôi đã xác định cho **ACMEPort** có thể rất hữu ích. Trên thực tế, gói các API của bên thứ ba là một phương pháp hay nhất. Khi bạn bọc một API của bên thứ ba, bạn giảm thiểu sự phụ thuộc của mình vào nó: Bạn có thể chọn chuyển sang một thư viện khác trong tương lai mà không cần thay đổi nhiều. Gói cũng giúp bạn dễ dàng bắt chước các cuộc gọi của bên thứ ba hơn khi bạn đang kiểm tra mã của riêng mình.
+Các trình gói như chúng ta đã xác định cho **ACMEPort** có thể rất hữu ích. Trên thực tế, gói các API của bên thứ ba là một phương pháp hay nhất. Khi bạn bọc một API của bên thứ ba, bạn giảm thiểu sự phụ thuộc của mình vào nó: Bạn có thể chọn chuyển sang một thư viện khác trong tương lai mà không cần thay đổi nhiều. Gói cũng giúp bạn dễ dàng bắt chước các cuộc gọi của bên thứ ba hơn khi bạn đang kiểm tra mã của riêng mình.
 
-Một lợi thế cuối cùng của gói là bạn không bị ràng buộc với các lựa chọn thiết kế API của một nhà cung cấp cụ thể. Bạn có thể xác định một API mà bạn cảm thấy thoải mái. Trong ví dụ trước, chúng tôi đã xác định một loại ngoại lệ duy nhất cho lỗi thiết bị **port** và nhận thấy rằng chúng tôi có thể viết mã sạch hơn nhiều.
+Một lợi thế cuối cùng của gói là bạn không bị ràng buộc với các lựa chọn thiết kế API của một nhà cung cấp cụ thể. Bạn có thể xác định một API mà bạn cảm thấy thoải mái. Trong ví dụ trước, chúng ta đã xác định một loại ngoại lệ duy nhất cho lỗi thiết bị **port** và nhận thấy rằng chúng ta có thể viết mã sạch hơn nhiều.
 
 Thường thì một lớp ngoại lệ duy nhất là tốt cho một vùng mã cụ thể. Thông tin được gửi với ngoại lệ có thể phân biệt các lỗi. Chỉ sử dụng các lớp khác nhau nếu đôi khi bạn muốn bắt một ngoại lệ và cho phép ngoại lệ khác đi qua.
 
@@ -306,7 +306,7 @@ public class MetricsCalculator {
     } 
 }
 ```
-Đó là một tài liệu tốt, nhưng nó không giải quyết được vấn đề. Nếu ai đó truyền vào giá trị **null**, chúng tôi sẽ vẫn gặp lỗi trong khi chạy chương trình.  
+Đó là một tài liệu tốt, nhưng nó không giải quyết được vấn đề. Nếu ai đó truyền vào giá trị **null**, chúng ta sẽ vẫn gặp lỗi trong khi chạy chương trình.  
 Trong hầu hết các ngôn ngữ lập trình, không có cách nào tốt để đối phó với giá trị **null** do người gọi vô tình truyền qua. Cách tiếp cận hợp lý là cấm truyền vào **null** theo mặc định. Khi bạn làm như vậy, bạn có thể viết mã với nhận định rằng giá trị **null** trong danh sách đối số đầu vào là dấu hiệu của một vấn đề và kết thúc với ít lỗi hơn.
 ## Phần kết luận
 Mã sạch có thể đọc được, nhưng nó cũng cần phải mạnh mẽ. Đây không phải là những mục tiêu xung đột. Chúng ta có thể viết mã sạch và mạnh mẽ nếu chúng ta thấy việc xử lý lỗi là một mối quan tâm riêng biệt, một thứ có thể xem là độc lập với logic chính của chúng ta. Ở mức độ mà chúng ta có thể làm được điều đó, chúng ta có thể lập luận về nó một cách độc lập và chúng ta có thể đạt được những bước tiến lớn trong khả năng bảo trì mã của chúng ta.
