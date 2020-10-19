@@ -2,38 +2,46 @@
 ## Michael Feathers
 ![Image tilte_1](../image/chap07_image01.png)
 
-Có vẻ kỳ lạ khi có một phần về xử lý lỗi trong một cuốn sách về mã sạch. Xử lý lỗi chỉ là một trong những việc mà tất cả chúng ta phải làm khi lập trình. Đầu vào có thể bất thường và thiết bị có thể bị lỗi. Nói tóm lại, mọi thứ có thể xảy ra sai sót, và khi chúng xảy ra, chúng ta với tư cách là người lập trình có trách nhiệm đảm bảo rằng mã của chúng ta thực hiện những gì nó cần làm.    
+Có vẻ kỳ lạ khi lại có một phần về xử lý lỗi trong một cuốn sách về mã sạch. Xử lý lỗi chỉ là một trong những việc mà tất cả chúng ta phải làm khi lập trình. Đầu vào có thể bất thường và thiết bị có thể bị lỗi. Nói tóm lại, mọi thứ đều có thể xảy ra sai sót, và khi chúng xảy ra, chúng ta với tư cách là người lập trình có trách nhiệm đảm bảo rằng mã của chúng ta thực hiện những gì nó cần làm.    
 
-Tuy nhiên, kết nối với mã sạch phải rõ ràng. Nhiều cơ sở mã bị chi phối hoàn toàn bởi việc xử lý lỗi. Khi tôi nói bị chi phối, tôi không có ý nói rằng lỗi chỉ là tất cả những gì họ làm. Ý tôi là gần như không thể thấy mã làm gì vì tất cả các lỗi xử lý rải rác. Xử lý lỗi là quan trọng, *nhưng nếu nó che khuất logic thì đó là sai*.
+Tuy nhiên, kết nối với mã sạch phải rõ ràng. Nhiều khi mã bị chi phối hoàn toàn bởi việc xử lý lỗi. Khi tôi nói bị chi phối, tôi không có ý nói rằng xử lý lỗi chỉ là tất cả những gì họ làm. Ý tôi là gần như không thể thấy mã làm gì vì tất cả các lỗi xử lý được rải rác. Xử lý lỗi là quan trọng, *nhưng nếu nó che khuất logic thì đó là sai*.
 
 Trong chương này, tôi sẽ trình bày một số kỹ thuật và cân nhắc mà bạn có thể sử dụng để viết mã vừa rõ ràng vừa mạnh mẽ — mã xử lý lỗi một cách duyên dáng và đúng phong cách.
 
 ## Sử dụng ngoại lệ thay vì trả lại mã   
-Trong quá khứ xa xôi, có rất nhiều ngôn ngữ không có ngoại lệ. Trong các ngôn ngữ đó, các kỹ thuật xử lý và báo cáo lỗi bị hạn chế. Bạn đặt cờ lỗi hoặc trả lại mã lỗi mà người gọi có thể kiểm tra. Mã trong Liệt kê 7-1 minh họa những cách tiếp cận này.
-**Listing 7-1**
+Trong quá khứ xa xôi, có rất nhiều ngôn ngữ không có ngoại lệ. Trong các ngôn ngữ đó, các kỹ thuật xử lý và báo cáo lỗi bị hạn chế. Bạn đặt cờ lỗi hoặc trả lại mã lỗi mà người gọi có thể kiểm tra. Mã trong Listing 7-1 minh họa những cách tiếp cận này.  
+
+**Listing 7-1**  
 **DeviceController.java**
 ```java
 public class DeviceController { 
     ...
-    public void sendShutDown() { DeviceHandle handle = getHandle(DEV1); // Check the state of the device
-    if (handle != DeviceHandle.INVALID) {
-        // Save the device status to the record field retrieveDeviceRecord(handle);
-        // If not suspended, shut down
-        if (record.getStatus() != DEVICE_SUSPENDED) {
-            pauseDevice(handle); clearDeviceWorkQueue(handle); closeDevice(handle);
+    public void sendShutDown() { 
+        DeviceHandle handle = getHandle(DEV1); 
+        // Kiểm tra trạng thái của thiết bị
+        if (handle != DeviceHandle.INVALID) {
+            // Lưu trạng thái thiết bị vào record field
+            retrieveDeviceRecord(handle);
+            // Nếu không bị treo, hãy tắt
+            if (record.getStatus() != DEVICE_SUSPENDED) {
+                pauseDevice(handle); 
+                clearDeviceWorkQueue(handle); 
+                closeDevice(handle);
+            } else {
+                logger.log("Thiết bị bị treo. Không thể tắt");
+            }
         } else {
-            logger.log("Device suspended. Unable to shut down");
+            logger.log("Xử lý không hợp lệ cho: " + DEV1.toString()); 
         }
-    } else {
-        logger.log("Invalid handle for: " + DEV1.toString()); }
     } 
     ...
 }
 ```
-Vấn đề với những cách tiếp cận này là chúng làm lộn xộn người gọi. Người gọi phải kiểm tra lỗi ngay sau cuộc gọi. Thật không may, nó rất dễ quên. Đối với trường hợp này, tốt hơn là bạn nên ném một ngoại lệ khi bạn gặp lỗi. Mã gọi sạch hơn. Logic của nó không bị che khuất bởi việc xử lý lỗi.   
-Liệt kê 7-2 hiển thị mã sau khi chúng tôi đã chọn đưa ra các ngoại lệ trong các phương pháp có thể phát hiện lỗi.
-**Listing 7-2**
-**DeviceController.java (with exceptions)**
+Vấn đề với những cách tiếp cận này là chúng gây lộn xộn cho người gọi. Người gọi phải kiểm tra lỗi ngay sau cuộc gọi. Thật không may, người gọi nó rất dễ quên. Đối với trường hợp này, tốt hơn là bạn nên ném một ngoại lệ khi bạn gặp lỗi. Mã gọi sạch hơn. Logic của nó không bị che khuất bởi việc xử lý lỗi.   
+Listing 7-2 hiển thị mã sau khi chúng tôi đã chọn đưa ra các ngoại lệ trong các phương pháp có thể phát hiện lỗi.  
+
+**Listing 7-2**  
+**DeviceController.java (with exceptions)**  
 ```java
 public class DeviceController { 
     ...
@@ -54,52 +62,52 @@ public class DeviceController {
     
     private DeviceHandle getHandle(DeviceID id) {
         ...
-        throw new DeviceShutDownError("Invalid handle for: " + id.toString()); 
+        throw new DeviceShutDownError("Xử lý không hợp lệ cho: " + id.toString()); 
         ...
     }
     ...
 }
 ```
-Để ý xem nó sạch hơn bao nhiêu. Đây không chỉ là vấn đề thẩm mỹ. Mã này tốt hơn vì hai mối quan tâm bị rối, thuật toán tắt thiết bị và xử lý lỗi, giờ đã được tách biệt. Bạn có thể xem xét từng mối quan tâm đó và hiểu chúng một cách độc lập.
-## Viết tuyên bố Try-Catch-Finally cùng của bạn trước
+Để ý xem nó sạch hơn bao nhiêu. Đây không chỉ là vấn đề thẩm mỹ. Mã này tốt hơn vì hai mối quan tâm bị chồng chéo, thuật toán **ShutDown** và **xử lý lỗi**, giờ đã được tách biệt. Bạn có thể xem xét từng vấn đề đó và hiểu chúng một cách độc lập.
+## Viết khối Try-Catch-Finally của bạn trước
 Một trong những điều thú vị nhất về các ngoại lệ là chúng xác định phạm vi trong chương trình của bạn. Khi bạn thực thi mã trong phần **try** của câu lệnh **try-catch-finally**, bạn đang nói rằng việc thực thi có thể xẩy ra lỗi tại bất kỳ thời điểm nào và sau đó mã trong **catch** sẽ được thực thi.
 
 Theo một cách nào đó, các khối **try** giống như các giao dịch. **catch** đảm bảo để chương trình của bạn ở trạng thái không bị gián đoạn, bởi bất kể điều gì xảy ra trong **try**. Vì lý do này, bạn nên bắt đầu bằng câu lệnh **try-catch-final** khi bạn viết mã, nó có thể đưa ra các ngoại lệ. Điều này giúp bạn xác định người dùng mã đó sẽ mong đợi điều gì khi xẩy ra lỗi với mã được thực thi trong **try**.
 
 Hãy xem một ví dụ. Chúng ta cần viết một số mã truy cập tệp và đọc một số đối tượng được serialized.
-Chúng tôi bắt đầu với unit test cho thấy rằng chúng tôi sẽ nhận được một ngoại lệ khi tệp không tồn tại:
+Chúng ta bắt đầu với unit test cho thấy rằng chúng ta sẽ nhận được một ngoại lệ khi tệp không tồn tại:
 ```java
 @Test(expected = StorageException.class)
 public void retrieveSectionShouldThrowOnInvalidFileName() {
-    sectionStore.retrieveSection("invalid - file"); 
+    sectionStore.retrieveSection("Tập tin không hợp lệ"); 
 }
 ```
-Việc kiểm tra thúc đẩy chúng tôi tạo ra sơ khai này:
+Việc kiểm tra thúc đẩy chúng ta tạo ra hàm này:
 ```java
 public List<RecordedGrip> retrieveSection(String sectionName) { 
-    // dummy return until we have a real implementation
+    // Fake return cho đến khi chúng tôi có một triển khai thực sự
     return new ArrayList<RecordedGrip>();
 }
 ```
-Thử nghiệm của chúng tôi không thành công vì nó không có ngoại lệ. Tiếp theo, chúng tôi thay đổi triển khai của chúng tôi để nó cố gắng truy cập một tệp không hợp lệ. Thao tác này đưa ra một ngoại lệ:
+Thử nghiệm của chúng ta không thành công vì nó không có ngoại lệ. Tiếp theo, chúng t thay đổi triển khai để nó cố gắng truy cập một tệp không hợp lệ. Thao tác này đưa ra một ngoại lệ:
 ```java
 public List<RecordedGrip> retrieveSection(String sectionName) { 
     try {
         FileInputStream stream = new FileInputStream(sectionName);
     } catch (Exception e) {
-        throw new StorageException("retrieval error", e); 
+        throw new StorageException("Lỗi truy xuất", e); 
     }
     return new ArrayList<RecordedGrip>();
 }
 ```
-Chúng tôi hiện đã vượt qua bài kiểm tra vì chúng tôi đã phát hiện ra ngoại lệ. Tại thời điểm này, chúng ta có thể tham khảo lại. Chúng tôi có thể thu hẹp loại ngoại lệ mà chúng tôi bắt được để phù hợp với loại thực sự được đưa ra từ phương thức khởi tạo của **FileInputStream**: **FileNotFoundException**:
+Chúng ta hiện đã vượt qua bài kiểm tra vì chúng ta đã phát hiện ra ngoại lệ. Tại thời điểm này, chúng ta có thể tham khảo lại. Chúng ta có thể thu hẹp loại ngoại lệ mà chúng ta **catch** được để phù hợp với loại thực sự được đưa ra từ phương thức khởi tạo của **FileInputStream**: **FileNotFoundException**:
 ```java
 public List<RecordedGrip> retrieveSection(String sectionName) { 
     try {
         FileInputStream stream = new FileInputStream(sectionName);
         stream.close();
     } catch (FileNotFoundException e) {
-        throw new StorageException("retrieval error”, e); 
+        throw new StorageException("Lỗi truy xuất”, e); 
     }
     return new ArrayList<RecordedGrip>(); 
 }
@@ -108,13 +116,13 @@ Bây giờ chúng ta đã xác định phạm vi với cấu trúc **try-catch**
 
 Cố gắng viết các bài kiểm tra buộc xảy ra các trường hợp ngoại lệ, sau đó thêm hành vi vào trình xử lý của bạn để điều chỉnh các bài kiểm tra của bạn. Điều này sẽ khiến bạn phải xây dựng phạm vi giao dịch của khối **try** trước và sẽ giúp bạn duy trì bản chất giao dịch của phạm vi đó.
 ## Sử dụng Unchecked Exceptions
-Cuộc tranh luận kết thúc. Trong nhiều năm, các lập trình viên Java đã tranh luận về lợi ích và mối quan hệ của các **checked exceptions**. Khi các **checked exceptions** được giới thiệu trong phiên bản Java đầu tiên, chúng dường như là một ý tưởng tuyệt vời. Chữ ký của mọi phương thức sẽ liệt kê tất cả các ngoại lệ mà nó có thể chuyển cho trình gọi của nó. Hơn nữa, những ngoại lệ này là một phần của loại phương pháp. Mã của bạn thực sự sẽ không biên dịch nếu chữ ký không khớp với những gì mã của bạn có thể làm.
+Cuộc tranh luận kết thúc. Trong nhiều năm, các lập trình viên Java đã tranh luận về lợi ích và mối quan hệ của các **checked exceptions**. Khi các **checked exceptions** được giới thiệu trong phiên bản Java đầu tiên, chúng dường như là một ý tưởng tuyệt vời. Hàm của mọi phương thức sẽ liệt kê tất cả các ngoại lệ mà nó có thể chuyển cho trình gọi của nó. Hơn nữa, những ngoại lệ này là một phần của loại phương pháp. Mã của bạn thực sự sẽ không biên dịch nếu hàm không khớp với những gì mã của bạn đã viết.
 
-Vào thời điểm đó, chúng tôi nghĩ rằng các **checked exceptions** là một ý tưởng tuyệt vời; và tất nhiên, chúng có thể mang lại *một số* lợi ích. Tuy nhiên, rõ ràng là giờ đây chúng không còn cần thiết để phát triển phần mềm. C# không có các **checked exceptions** và bất chấp mọi nỗ lực, C++ cũng không. Python hay Ruby cũng vậy. Tuy nhiên, có thể viết phần bằng tất cả các ngôn ngữ này. Do đó, chúng tôi phải quyết định - thực sự - liệu các **checked exceptions** có xứng đáng với cái giá của chúng hay không.
-### Định nghĩa lớp Exception trong điều khoản về nhu cầu của người gọi
-Giá bao nhiêu? Giá của các trường hợp **checked exceptions** là vi phạm Nguyên tắc Mở/Đóng. Nếu bạn ném một **checked exceptions** từ một phương thức trong mã của bạn và lệnh **catch** ở ba mức trên, *bạn phải khai báo ngoại lệ đó trong chữ ký của mỗi phương thức giữa bạn và lệnh* **catch**. Điều này có nghĩa là một thay đổi ở cấp thấp của phần mềm có thể buộc phải thay đổi chữ ký ở nhiều cấp cao hơn. Các mô-đun đã thay đổi phải được xây dựng lại và triển khai lại, mặc dù không có gì họ quan tâm đến đã thay đổi.
+Vào thời điểm đó, chúng tôi nghĩ rằng các **checked exceptions** là một ý tưởng tuyệt vời; và tất nhiên, chúng có thể mang lại *một số* lợi ích. Tuy nhiên, rõ ràng là giờ đây chúng không còn cần thiết để phát triển phần mềm. C# không có các **checked exceptions** và bất chấp mọi nỗ lực, C++ cũng không. Python hay Ruby cũng vậy. Tuy nhiên, có thể viết phần mềm bằng tất cả các ngôn ngữ này. Do đó, chúng tôi phải **quyết định - thực sự - liệu** các **checked exceptions** có xứng đáng với cái giá của chúng hay không.
+### Định nghĩa lớp Exception theo nhu cầu của người gọi
+Giá bao nhiêu? Giá của các trường hợp **checked exceptions** là vi phạm nguyên tắc Mở/Đóng. Nếu bạn ném một **checked exceptions** từ một phương thức trong mã của bạn và lệnh **catch** ở ba mức trên, *bạn phải khai báo ngoại lệ đó trong signature của mỗi phương thức giữa bạn và lệnh* **catch**. Điều này có nghĩa là một thay đổi ở cấp thấp của phần mềm có thể buộc phải thay đổi signature ở nhiều cấp cao hơn. Các mô-đun đã thay đổi phải được xây dựng lại và triển khai lại, mặc dù không có gì họ quan tâm đến đã thay đổi.
 
-Xem xét hệ thống phân cấp gọi của một hệ thống lớn. Các hàm ở trên cùng gọi các hàm bên dưới chúng, gọi tiếp các hàm khác bên dưới chúng, vv... Bây giờ, giả sử một trong những hàm cấp thấp nhất được sửa đổi theo cách mà nó phải đưa ra một ngoại lệ. Nếu ngoại lệ đó được chọn, thì chữ ký hàm phải thêm một mệnh đề **throws**. Nhưng điều này có nghĩa là mọi hàm gọi hàm đã sửa đổi của chúng ta cũng phải được sửa đổi để bắt được ngoại lệ mới hoặc để nối mệnh đề **throws** thích hợp vào chữ ký của nó. vv... Kết quả thực là một loạt các thay đổi hoạt động theo cách của chúng từ mức thấp nhất của phần mềm đến mức cao nhất! Tính năng đóng gói bị phá vỡ bởi vì tất cả các hàm trong đường dẫn của một lần ném phải biết về chi tiết của ngoại lệ cấp thấp đó. Vì mục đích của các ngoại lệ là cho phép bạn xử lý lỗi ở khoảng cách xa, thật đáng tiếc khi các **checked exceptions** phá vỡ tính đóng gói theo cách này.
+Xem xét hệ thống phân cấp gọi của một hệ thống lớn. Các hàm ở trên cùng gọi các hàm bên dưới chúng, gọi tiếp các hàm khác bên dưới chúng, vv... Bây giờ, giả sử một trong những hàm cấp thấp nhất được sửa đổi theo cách mà nó phải đưa ra một ngoại lệ. Nếu ngoại lệ đó được chọn, thì signature hàm phải thêm một mệnh đề **throws**. Nhưng điều này có nghĩa là mọi hàm gọi hàm đã sửa đổi của chúng ta cũng phải được sửa đổi để bắt được ngoại lệ mới hoặc để nối mệnh đề **throws** thích hợp vào chữ ký của nó. vv... Kết quả thực là một loạt các thay đổi hoạt động theo cách của chúng từ mức thấp nhất của phần mềm đến mức cao nhất! Tính năng đóng gói bị phá vỡ bởi vì tất cả các hàm trong đường dẫn của một lần ném phải biết về chi tiết của ngoại lệ cấp thấp đó. Vì mục đích của các ngoại lệ là cho phép bạn xử lý lỗi ở khoảng cách xa, thật đáng tiếc khi các **checked exceptions** phá vỡ tính đóng gói theo cách này.
 
 **checked exceptions** đôi khi có thể hữu ích nếu bạn đang viết thư viện quan trọng: Bạn phải **catch** chúng. Nhưng trong phát triển ứng dụng nói chung, chi phí phụ thuộc lớn hơn lợi ích mà nó đem lại.
 
@@ -144,9 +152,9 @@ Hãy xem một ví dụ về phân loại ngoại lệ kém. Đây là câu lệ
         ...
     }
 ```
-Tuyên bố đó chứa đựng rất nhiều sự trùng lặp và chúng ta không nên ngạc nhiên. Trong hầu hết các tình huống xử lý ngoại lệ, công việc mà chúng tôi thực hiện tương đối chuẩn, bất kể nguyên nhân thực tế là gì. Chúng tôi phải ghi lại một lỗi và đảm bảo rằng chúng tôi có thể tiếp tục.
+Tuyên bố đó chứa đựng rất nhiều sự trùng lặp và chúng ta không nên ngạc nhiên. Trong hầu hết các tình huống xử lý ngoại lệ, công việc mà chúng ta thực hiện tương đối chuẩn, bất kể nguyên nhân thực tế là gì. Chúng ta phải ghi lại một lỗi và đảm bảo rằng chúng ta có thể tiếp tục.
 
-Trong trường hợp này, bởi vì chúng tôi biết rằng công việc chúng tôi đang làm gần như giống nhau bất kể ngoại lệ, chúng tôi có thể đơn giản hóa mã của mình đáng kể bằng cách gói API mà chúng tôi đang gọi và đảm bảo rằng nó trả về một loại ngoại lệ chung:
+Trong trường hợp này, bởi vì chúng ta biết rằng công việc chúng ta đang làm gần như giống nhau bất kể ngoại lệ xảy ra là gì, chúng ta có thể đơn giản hóa mã của mình đáng kể bằng cách gói API mà chúng ta đang gọi và đảm bảo rằng nó trả về một loại ngoại lệ chung:
 ```java
     LocalPort port = new LocalPort(12); 
     try {
@@ -158,7 +166,7 @@ Trong trường hợp này, bởi vì chúng tôi biết rằng công việc ch�
         ...
     }
 ```
-Lớp **LocalPort** của chúng tôi chỉ là một trình bao bọc đơn giản giúp bắt và dịch các ngoại lệ được ném bởi lớp **ACMEPort**:
+Lớp **LocalPort** của chúng ta chỉ là một trình bao bọc đơn giản giúp bắt và dịch các ngoại lệ được ném bởi lớp **ACMEPort**:
 ```java
 public class LocalPort {
     private ACMEPort innerPort;
@@ -179,7 +187,7 @@ public class LocalPort {
     ...
 }
 ```
-Các trình gói như chúng tôi đã xác định cho **ACMEPort** có thể rất hữu ích. Trên thực tế, gói các API của bên thứ ba là một phương pháp hay nhất. Khi bạn bọc một API của bên thứ ba, bạn giảm thiểu sự phụ thuộc của mình vào nó: Bạn có thể chọn chuyển sang một thư viện khác trong tương lai mà không bị phạt nhiều. Gói cũng giúp bạn dễ dàng bắt chước các cuộc gọi của bên thứ ba hơn khi bạn đang kiểm tra mã của riêng mình.
+Các trình gói như chúng tôi đã xác định cho **ACMEPort** có thể rất hữu ích. Trên thực tế, gói các API của bên thứ ba là một phương pháp hay nhất. Khi bạn bọc một API của bên thứ ba, bạn giảm thiểu sự phụ thuộc của mình vào nó: Bạn có thể chọn chuyển sang một thư viện khác trong tương lai mà không cần thay đổi nhiều. Gói cũng giúp bạn dễ dàng bắt chước các cuộc gọi của bên thứ ba hơn khi bạn đang kiểm tra mã của riêng mình.
 
 Một lợi thế cuối cùng của gói là bạn không bị ràng buộc với các lựa chọn thiết kế API của một nhà cung cấp cụ thể. Bạn có thể xác định một API mà bạn cảm thấy thoải mái. Trong ví dụ trước, chúng tôi đã xác định một loại ngoại lệ duy nhất cho lỗi thiết bị **port** và nhận thấy rằng chúng tôi có thể viết mã sạch hơn nhiều.
 
@@ -190,7 +198,7 @@ Thường thì một lớp ngoại lệ duy nhất là tốt cho một vùng mã
 
 Nếu bạn làm theo lời khuyên trong phần trước, bạn sẽ có một sự tách biệt tốt giữa logic nghiệp vụ và việc xử lý lỗi của bạn. Phần lớn mã của bạn sẽ bắt đầu trông giống như một thuật toán không trang trí. Tuy nhiên, quá trình thực hiện việc này đẩy khả năng phát hiện lỗi ra rìa chương trình của bạn. Bạn bọc các API bên ngoài để bạn có thể đưa ra các ngoại lệ của riêng mình và bạn xác định một trình xử lý phía trên mã của mình để bạn có thể đối phó với bất kỳ tính toán nào bị hủy bỏ. Hầu hết thời gian đây là một cách tiếp cận tuyệt vời, nhưng có một số lúc bạn có thể không muốn nó xẩy ra.
 
-Hãy xem một ví dụ. Dưới đây là một số mã khó hiểu tính tổng các chi phí trong ứng dụng thanh toán:
+Hãy xem một ví dụ. Dưới đây là một mã khó hiểu tính tổng các chi phí trong ứng dụng thanh toán:
 ```java
     try {
         MealExpenses expenses = expenseReportDAO.getMeals(employee.getID()); 
@@ -199,16 +207,16 @@ Hãy xem một ví dụ. Dưới đây là một số mã khó hiểu tính tổ
         m_total += getMealPerDiem();
     }
 ```
-Trong nghiệp vụ này, nếu các bữa ăn tiêu tốn nhiều chi phí, chúng sẽ trở thành một phần của tổng số. Nếu không, nhân viên sẽ nhận được một khoản tiền **công tác phí** cho ngày hôm đó. Ngoại lệ làm lộn xộn logic. Sẽ tốt hơn nếu chúng ta không phải giải quyết trường hợp đặc biệt? Mã của chúng tôi sẽ trông đơn giản hơn nhiều. Nó sẽ trông như thế này:
+Trong nghiệp vụ này, nếu các bữa ăn tiêu tốn nhiều chi phí, chúng sẽ trở thành một phần của tổng số. Nếu không, nhân viên sẽ nhận được một khoản tiền **công tác phí** cho ngày hôm đó. Ngoại lệ làm lộn xộn logic. Sẽ tốt hơn nếu chúng ta không phải giải quyết trường hợp đặc biệt? Mã của chúng ta sẽ trông đơn giản hơn nhiều. Nó sẽ trông như thế này:
 ```java
     MealExpenses expenses = expenseReportDAO.getMeals(employee.getID()); 
     m_total += expenses.getTotal();
 ```
-Chúng ta có thể làm cho mã đơn giản như vậy không? Nó chỉ ra rằng chúng tôi có thể. Chúng ta có thể thay đổi **ExpenseReportDAO** để nó luôn trả về một đối tượng **MealExpense**. Nếu không có chi phí bữa ăn, nó trả về đối tượng **MealExpense** trả về **công tác phí** là tổng của nó:
+Chúng ta có thể làm cho mã đơn giản như vậy không? Nó chỉ ra rằng chúng ta có thể. Chúng ta có thể thay đổi **ExpenseReportDAO** để nó luôn trả về một đối tượng **MealExpense**. Nếu không có chi phí bữa ăn, nó trả về đối tượng **MealExpense** trả về **công tác phí** là tổng của nó:
 ```java
 public class PerDiemMealExpenses implements MealExpenses { 
     public int getTotal() {
-        // return the per diem default 
+        // trả lại công tác phí mặc định 
     }
 }
 ```
@@ -230,7 +238,7 @@ public void registerItem(Item item) {
 ```
 Nếu bạn làm việc trong một cơ sở mã với mã như thế này, nó có thể không tệ đối với bạn, nhưng nó thật sự là sự thiếu trách nhiệm! Khi chúng ta trả về **null**, về cơ bản chúng ta đang tự tạo ra công việc cho chính bản thân mình đồng thời cũng để cho người gọi hàm phải giải quyết thêm vấn đề. Thử tưởng tượng người gọi hàm quên kiểm tra **null** một lần, ứng dụng ngay lập tức sẽ xẩy ra lỗi và tất nhiên không ai mong muốn điều đó cả.
 
-Bạn có nhận thấy là không có kiểm tra **null** trong dòng thứ hai của câu lệnh **if** lồng nhau đó không? Điều gì sẽ xảy ra trong khi chạy nếu **persistentStore** null? Chúng tôi đã có một **NullPointerException** trong khi chạy và ai đó đang bắt **NullPointerException** ở cấp cao nhất, hoặc họ không làm vậy. Dù thế nào thì nó cũng rất tệ. Vậy chính xác thì bạn nên làm gì để đáp lại một **NullPointerException** được ném ra từ sâu bên trong ứng dụng của bạn?
+Bạn có nhận thấy là không có kiểm tra **null** trong dòng thứ hai của câu lệnh **if** lồng nhau đó không? Điều gì sẽ xảy ra trong khi chạy nếu **persistentStore** null? Chúng ta đã có một **NullPointerException** trong khi chạy và ai đó đang bắt **NullPointerException** ở cấp cao nhất, hoặc họ không làm vậy. Dù thế nào thì nó cũng rất tệ. Vậy chính xác thì bạn nên làm gì để đáp lại một **NullPointerException** được ném ra từ sâu bên trong ứng dụng của bạn?
 
 Có thể dễ dàng nói rằng vấn đề với đoạn mã trên là nó thiếu kiểm tra **null**, nhưng trên thực tế, vấn đề là nó xảy ra *quá nhiều*. Nếu bạn muốn trả về **null** từ một phương thức, hãy xem xét việc ném một ngoại lệ hoặc trả về một đối tượng ĐẶC BIỆT để thay thế. Nếu bạn đang gọi một phương thức trả về **null** từ một API của bên thứ ba, hãy xem xét gói phương thức đó bằng một phương thức ném ngoại lệ hoặc trả về một đối tượng đặc biệt.
 
@@ -301,6 +309,6 @@ public class MetricsCalculator {
 Đó là một tài liệu tốt, nhưng nó không giải quyết được vấn đề. Nếu ai đó truyền vào giá trị **null**, chúng tôi sẽ vẫn gặp lỗi trong khi chạy chương trình.  
 Trong hầu hết các ngôn ngữ lập trình, không có cách nào tốt để đối phó với giá trị **null** do người gọi vô tình truyền qua. Cách tiếp cận hợp lý là cấm truyền vào **null** theo mặc định. Khi bạn làm như vậy, bạn có thể viết mã với nhận định rằng giá trị **null** trong danh sách đối số đầu vào là dấu hiệu của một vấn đề và kết thúc với ít lỗi hơn.
 ## Phần kết luận
-Mã sạch có thể đọc được, nhưng nó cũng phải mạnh mẽ. Đây không phải là những mục tiêu xung đột. Chúng ta có thể viết mã sạch và mạnh mẽ nếu chúng ta thấy việc xử lý lỗi là một mối quan tâm riêng biệt, một thứ có thể xem là độc lập với logic chính của chúng ta. Ở mức độ mà chúng ta có thể làm được điều đó, chúng ta có thể lập luận về nó một cách độc lập và chúng ta có thể đạt được những bước tiến lớn trong khả năng bảo trì mã của chúng ta.
+Mã sạch có thể đọc được, nhưng nó cũng cần phải mạnh mẽ. Đây không phải là những mục tiêu xung đột. Chúng ta có thể viết mã sạch và mạnh mẽ nếu chúng ta thấy việc xử lý lỗi là một mối quan tâm riêng biệt, một thứ có thể xem là độc lập với logic chính của chúng ta. Ở mức độ mà chúng ta có thể làm được điều đó, chúng ta có thể lập luận về nó một cách độc lập và chúng ta có thể đạt được những bước tiến lớn trong khả năng bảo trì mã của chúng ta.
 ## Thư mục
 [Martin]: Agile Software Development: Principles, Patterns, and Practices, Robert C. Martin, Prentice Hall, 2002.
