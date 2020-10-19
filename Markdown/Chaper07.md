@@ -1,6 +1,6 @@
 # Chaper 07: Xử lý lỗi
 ## Michael Feathers
-![Image tilte](https://raw.githubusercontent.com/chukimmuoi/Clean-Code---Tieng-Viet/master/image/chap07_image01.png)
+![Image tilte_1](../image/chap07_image01.png)
 
 Có vẻ kỳ lạ khi có một phần về xử lý lỗi trong một cuốn sách về mã sạch. Xử lý lỗi chỉ là một trong những việc mà tất cả chúng ta phải làm khi lập trình. Đầu vào có thể bất thường và thiết bị có thể bị lỗi. Nói tóm lại, mọi thứ có thể xảy ra sai sót, và khi chúng xảy ra, chúng ta với tư cách là người lập trình có trách nhiệm đảm bảo rằng mã của chúng ta thực hiện những gì nó cần làm.    
 
@@ -184,3 +184,123 @@ Các trình gói như chúng tôi đã xác định cho **ACMEPort** có thể r
 Một lợi thế cuối cùng của gói là bạn không bị ràng buộc với các lựa chọn thiết kế API của một nhà cung cấp cụ thể. Bạn có thể xác định một API mà bạn cảm thấy thoải mái. Trong ví dụ trước, chúng tôi đã xác định một loại ngoại lệ duy nhất cho lỗi thiết bị **port** và nhận thấy rằng chúng tôi có thể viết mã sạch hơn nhiều.
 
 Thường thì một lớp ngoại lệ duy nhất là tốt cho một vùng mã cụ thể. Thông tin được gửi với ngoại lệ có thể phân biệt các lỗi. Chỉ sử dụng các lớp khác nhau nếu đôi khi bạn muốn bắt một ngoại lệ và cho phép ngoại lệ khác đi qua.
+
+## Xác định dòng chảy bình thường
+![Image tilte_2](../image/chap07_image02.png)
+
+Nếu bạn làm theo lời khuyên trong phần trước, bạn sẽ có một sự tách biệt tốt giữa logic nghiệp vụ và việc xử lý lỗi của bạn. Phần lớn mã của bạn sẽ bắt đầu trông giống như một thuật toán không trang trí. Tuy nhiên, quá trình thực hiện việc này đẩy khả năng phát hiện lỗi ra rìa chương trình của bạn. Bạn bọc các API bên ngoài để bạn có thể đưa ra các ngoại lệ của riêng mình và bạn xác định một trình xử lý phía trên mã của mình để bạn có thể đối phó với bất kỳ tính toán nào bị hủy bỏ. Hầu hết thời gian đây là một cách tiếp cận tuyệt vời, nhưng có một số lúc bạn có thể không muốn nó xẩy ra.
+
+Hãy xem một ví dụ. Dưới đây là một số mã khó hiểu tính tổng các chi phí trong ứng dụng thanh toán:
+```java
+    try {
+        MealExpenses expenses = expenseReportDAO.getMeals(employee.getID()); 
+        m_total += expenses.getTotal();
+    } catch(MealExpensesNotFound e) { 
+        m_total += getMealPerDiem();
+    }
+```
+Trong nghiệp vụ này, nếu các bữa ăn tiêu tốn nhiều chi phí, chúng sẽ trở thành một phần của tổng số. Nếu không, nhân viên sẽ nhận được một khoản tiền **công tác phí** cho ngày hôm đó. Ngoại lệ làm lộn xộn logic. Sẽ tốt hơn nếu chúng ta không phải giải quyết trường hợp đặc biệt? Mã của chúng tôi sẽ trông đơn giản hơn nhiều. Nó sẽ trông như thế này:
+```java
+    MealExpenses expenses = expenseReportDAO.getMeals(employee.getID()); 
+    m_total += expenses.getTotal();
+```
+Chúng ta có thể làm cho mã đơn giản như vậy không? Nó chỉ ra rằng chúng tôi có thể. Chúng ta có thể thay đổi **ExpenseReportDAO** để nó luôn trả về một đối tượng **MealExpense**. Nếu không có chi phí bữa ăn, nó trả về đối tượng **MealExpense** trả về **công tác phí** là tổng của nó:
+```java
+public class PerDiemMealExpenses implements MealExpenses { 
+    public int getTotal() {
+        // return the per diem default 
+    }
+}
+```
+Đây được gọi là MẪU TRƯỜNG HỢP ĐẶC BIỆT [Fowler]. Bạn tạo một lớp hoặc cấu hình một đối tượng để nó xử lý một trường hợp đặc biệt cho bạn. Khi bạn làm như vậy, mã khách hàng không phải đối phó với các hành vi đặc biệt. Hành vi đó được gói gọn trong đối tượng trường hợp đặc biệt.
+## Đừng trả về Null
+Tôi nghĩ rằng bất kỳ cuộc thảo luận nào về xử lý lỗi cũng nên đề cập đến những việc làm mà dẫn đến lỗi. Đầu tiên trong danh sách: **trả về null**. Tôi không thể đếm được số lượng các ứng dụng mà tôi đã thấy trong đó gần như mọi dòng đều là dấu kiểm tra **null**. Đây là một số mã ví dụ:
+```java
+public void registerItem(Item item) { 
+    if (item != null) {
+        ItemRegistry registry = peristentStore.getItemRegistry(); 
+        if (registry != null) {
+            Item existing = registry.getItem(item.getID());
+            if (existing.getBillingPeriod().hasRetailOwner()) {
+                existing.register(item); 
+            }
+        } 
+    }
+}
+```
+Nếu bạn làm việc trong một cơ sở mã với mã như thế này, nó có thể không tệ đối với bạn, nhưng nó thật sự là sự thiếu trách nhiệm! Khi chúng ta trả về **null**, về cơ bản chúng ta đang tự tạo ra công việc cho chính bản thân mình đồng thời cũng để cho người gọi hàm phải giải quyết thêm vấn đề. Thử tưởng tượng người gọi hàm quên kiểm tra **null** một lần, ứng dụng ngay lập tức sẽ xẩy ra lỗi và tất nhiên không ai mong muốn điều đó cả.
+
+Bạn có nhận thấy là không có kiểm tra **null** trong dòng thứ hai của câu lệnh **if** lồng nhau đó không? Điều gì sẽ xảy ra trong khi chạy nếu **persistentStore** null? Chúng tôi đã có một **NullPointerException** trong khi chạy và ai đó đang bắt **NullPointerException** ở cấp cao nhất, hoặc họ không làm vậy. Dù thế nào thì nó cũng rất tệ. Vậy chính xác thì bạn nên làm gì để đáp lại một **NullPointerException** được ném ra từ sâu bên trong ứng dụng của bạn?
+
+Có thể dễ dàng nói rằng vấn đề với đoạn mã trên là nó thiếu kiểm tra **null**, nhưng trên thực tế, vấn đề là nó xảy ra *quá nhiều*. Nếu bạn muốn trả về **null** từ một phương thức, hãy xem xét việc ném một ngoại lệ hoặc trả về một đối tượng ĐẶC BIỆT để thay thế. Nếu bạn đang gọi một phương thức trả về **null** từ một API của bên thứ ba, hãy xem xét gói phương thức đó bằng một phương thức ném ngoại lệ hoặc trả về một đối tượng đặc biệt.
+
+Trong nhiều trường hợp, các đối tượng trường hợp đặc biệt là một biện pháp khắc phục dễ dàng. Hãy tưởng tượng rằng bạn có mã như thế này:
+```java
+    List<Employee> employees = getEmployees(); 
+    if (employees != null) {
+        for(Employee e : employees) { 
+            totalPay += e.getPay();
+        } 
+    }
+```
+Bây giờ, **getEmployees** có thể trả về **null**, nhưng có nhất thiết phải vậy không? Nếu chúng ta thay đổi **getEmployees** để nó trả về một danh sách rỗng (danh sách không có phần tử nào) thay vì trả về **null**, chúng ta có thể xóa mã kiểm tra **null**:
+```java
+    List<Employee> employees = getEmployees(); 
+    for(Employee e : employees) {
+        totalPay += e.getPay(); 
+    }
+```
+May mắn thay, Java có **Collections.emptyList()** và nó trả về một danh sách bất biến được xác định trước mà chúng ta có thể sử dụng cho mục đích này:
+```java
+public List<Employee> getEmployees() { 
+    if( .. không có employees .. )
+        return Collections.emptyList(); 
+}
+```
+Nếu bạn viết mã theo cách này, bạn sẽ giảm thiểu cơ hội xuất hiện **NullPointerExceptions** và mã của bạn sẽ sạch hơn.
+## Đừng truyền Null
+Trả về **null** từ các phương thức là không tốt, nhưng truyền **null** vào các phương thức thì còn tệ hơn. Trừ khi bạn đang làm việc với một API yêu cầu bạn truyền vào **null**, còn đâu bạn nên tránh truyền **null** trong mã của mình bất cứ khi nào có thể.
+
+Hãy xem một ví dụ để biết tại sao. Đây là một phương pháp đơn giản để tính toán một số liệu cho hai điểm:
+```java
+public class MetricsCalculator {
+    public double xProjection(Point p1, Point p2) { 
+        return (p2.x – p1.x) * 1.5;
+    }
+    ...
+}
+
+```
+Điều gì xảy ra khi ai đó truyền **null** làm đối số cho hàm này?
+```java
+calculator.xProjection(null, new Point(12, 13));
+```
+Tất nhiên, chúng ta sẽ nhận được một **NullPointerException**.  
+Vậy, làm thế nào chúng ta có thể sửa chữa nó? Chúng ta có thể tạo một loại ngoại lệ mới và **throw** nó:
+```java
+public class MetricsCalculator {
+    public double xProjection(Point p1, Point p2) { 
+        if(p1 == null || p2 == null) {
+            throw InvalidArgumentException("Invalid argument for MetricsCalculator.xProjection");
+        }
+        return (p2.x – p1.x) * 1.5; 
+    }  
+}
+```
+Tốt hơn chưa? Nó có thể tốt hơn một chút so với **NullPointerException**, nhưng hãy nhớ rằng, chúng ta phải xác định một trình xử lý cho **InvalidArgumentException**. Người xử lý phải làm gì? Có bất kỳ hướng đi nào tốt hơn không?
+Có một sự thay thế khác. Chúng ta có thể sử dụng một tập hợp các **assertions** để xác nhận:
+```java
+public class MetricsCalculator {
+    public double xProjection(Point p1, Point p2) { 
+        assert p1 != null : "p1 should not be null"; 
+        assert p2 != null : "p2 should not be null"; 
+        return (p2.x – p1.x) * 1.5;
+    } 
+}
+```
+Đó là một tài liệu tốt, nhưng nó không giải quyết được vấn đề. Nếu ai đó truyền vào giá trị **null**, chúng tôi sẽ vẫn gặp lỗi trong khi chạy chương trình.  
+Trong hầu hết các ngôn ngữ lập trình, không có cách nào tốt để đối phó với giá trị **null** do người gọi vô tình truyền qua. Cách tiếp cận hợp lý là cấm truyền vào **null** theo mặc định. Khi bạn làm như vậy, bạn có thể viết mã với nhận định rằng giá trị **null** trong danh sách đối số đầu vào là dấu hiệu của một vấn đề và kết thúc với ít lỗi hơn.
+## Phần kết luận
+Mã sạch có thể đọc được, nhưng nó cũng phải mạnh mẽ. Đây không phải là những mục tiêu xung đột. Chúng ta có thể viết mã sạch và mạnh mẽ nếu chúng ta thấy việc xử lý lỗi là một mối quan tâm riêng biệt, một thứ có thể xem là độc lập với logic chính của chúng ta. Ở mức độ mà chúng ta có thể làm được điều đó, chúng ta có thể lập luận về nó một cách độc lập và chúng ta có thể đạt được những bước tiến lớn trong khả năng bảo trì mã của chúng ta.
+## Thư mục
+[Martin]: Agile Software Development: Principles, Patterns, and Practices, Robert C. Martin, Prentice Hall, 2002.
