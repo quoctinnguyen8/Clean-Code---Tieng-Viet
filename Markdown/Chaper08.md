@@ -1,5 +1,5 @@
 # Ranh giới
-## by James Grenning
+## bởi James Grenning
 ![Image tilte_1](../image/chap08_image01.png)
 Chúng ta hiếm khi kiểm soát hoàn toàn các phần mềm trong hệ thống của mình. Đôi khi chúng ta mua gói của bên thứ ba hoặc sử dụng mã nguồn mở. Những lần khác, chúng ta phụ thuộc vào các nhóm trong công ty để sản xuất các thành phần hoặc hệ thống con. Bằng cách nào đó, chúng ta phải tích hợp các mã ngoài này với mã riêng của chúng ta một cách rõ ràng. Trong chương này, chúng ta sẽ xem xét các phương pháp và kỹ thuật để giữ cho ranh giới của phần mềm của chúng ta được sạch sẽ.
 
@@ -77,8 +77,8 @@ Giả sử chúng ta muốn sử dụng gói apache **log4j** hơn là trình gh
 ```java
 @Test
 public void testLogCreate() {
-  Logger logger = Logger.getLogger("MyLogger");
-  logger.info("hello"); 
+    Logger logger = Logger.getLogger("MyLogger");
+    logger.info("Xin chào"); 
 }
 
 ```
@@ -86,26 +86,27 @@ Khi chạy nó, trình ghi nhật ký tạo ra một lỗi cho biết rằng c�
 ```java
 @Test
 public void testLogAddAppender() {
-  Logger logger = Logger.getLogger("MyLogger"); 
-  ConsoleAppender appender = new ConsoleAppender();       
-  logger.addAppender(appender); logger.info("hello");
+    Logger logger = Logger.getLogger("MyLogger"); 
+    ConsoleAppender appender = new ConsoleAppender();       
+    logger.addAppender(appender); 
+    logger.info("Xin chào");
 }
 ```
 Lần này, chúng a thấy rằng **Appender** không có luồng đầu ra. Quả là kỳ lạ? Sau khi nhờ trợ giúp từ Google, ta thử cách sau:
 ```java
 @Test
 public void testLogAddAppender() {
-  Logger logger = Logger.getLogger("MyLogger"); 
-  logger.removeAllAppenders(); 
-  logger.addAppender(new ConsoleAppender(
-    new PatternLayout("%p %t %m%n"),
-    ConsoleAppender.SYSTEM_OUT)); 
-  logger.info("hello");
+    Logger logger = Logger.getLogger("MyLogger"); 
+    logger.removeAllAppenders(); 
+    logger.addAppender(new ConsoleAppender(
+        new PatternLayout("%p %t %m%n"),
+        ConsoleAppender.SYSTEM_OUT)); 
+    logger.info("Xin chào");
 }
 ```
 Điều đó đã hiệu quả; một thông báo nhật ký bao gồm “xin chào” xuất hiện trên bảng điều khiển! Có vẻ kỳ lạ khi chúng ta phải nói với **ConsoleAppender** rằng nó phải ghi vào bảng điều khiển.
 
-Điều thú vị là khi chúng ta loại bỏ đối số **ConsoleAppender.SystemOut**, chúng ta thấy rằng “xin chào” vẫn được in. Nhưng khi chúng ta loại bỏ **PatternLayout**, một lần nữa nó lại gặp phải việc thiếu một luồng đầu ra. Đây là việc rất kỳ lạ.
+Điều thú vị là khi chúng ta loại bỏ đối số **ConsoleAppender.SYSTEM_OUT**, chúng ta thấy rằng “xin chào” vẫn được in. Nhưng khi chúng ta loại bỏ **PatternLayout**, một lần nữa nó lại gặp phải việc thiếu một luồng đầu ra. Đây là việc rất kỳ lạ.
 
 Xem xét kỹ hơn một chút vào tài liệu, chúng ta thấy rằng hàm tạo **ConsoleAppender** mặc định là "chưa được đặt thông số cấu hình", điều này có vẻ không rõ ràng hoặc hữu ích. Nó giống như một lỗi hoặc ít nhất là sự không nhất quán trong **log4j**.
 
@@ -160,8 +161,8 @@ Có một loại ranh giới khác, một loại ranh giới ngăn cách cái đ
 
 Một số năm trước, tôi là thành viên của nhóm phát triển phần mềm cho hệ thống thông tin liên lạc vô tuyến. Có một hệ thống con, “Transmitter,” mà chúng tôi ít biết về nó, và những người chịu trách nhiệm về hệ thống con chưa xác định interfce cho chúng. Chúng tôi không muốn phải dừng lại, vì vậy chúng tôi đã bắt đầu công việc của mình từ phần chưa biết của mã.
 
-Chúng ta đã có một ý tưởng khá tốt khi vấn đề xẩy. Trong quá trình làm việc, đôi khi chúng ta tù mù không nắm rõ được vấn đề, nhưng rồi qua thời gian chúng ra đã nhận thức được chúng ta đích xác cần gì, chúng ta mong muốn điều gì trong quá trình phát triển để rồi dựng lên interface giao tiếp đáp ứng cho mong muốn của chúng ta. Một điều gì đó như thế này:
-*Mã máy phát trên tần số được cung cấp và phát ra một biểu diễn tương tự như dữ liệu đến từ luồng.*
+Chúng ta đã có một ý tưởng khá tốt khi vấn đề xẩy. Trong quá trình làm việc, đôi khi chúng ta tù mù không nắm rõ được vấn đề, nhưng rồi qua thời gian chúng ra đã nhận thức được chúng ta đích xác cần gì, chúng ta mong muốn điều gì trong quá trình phát triển để rồi dựng lên interface giao tiếp đáp ứng cho mong muốn của chúng ta. Một điều gì đó như thế này:  
+*Mã transmitter được cung cấp và phát ra một biểu diễn tương tự như dữ liệu đến từ luồng.*
 
 Chúng tôi không biết điều đó sẽ được thực hiện như thế nào vì API chưa được thiết kế. Vì vậy, chúng tôi quyết định làm việc sau.
 
@@ -169,9 +170,9 @@ Chúng tôi không biết điều đó sẽ được thực hiện như thế n�
 
 Một điều tốt khi viết giao diện mà chúng ta mong muốn là nó nằm trong tầm kiểm soát. Điều này giúp mã dễ đọc hơn và tập trung vào những gì nó đang cố gắng hoàn thành.
 
-Trong Hình 8-2, bạn có thể thấy rằng chúng ta đã tách các lớp **CommunicationsController** khỏi transmitter API (nằm ngoài tầm kiểm soát của chúng ta và không được xác định). Bằng cách sử dụng interface ứng dụng cụ thể của riêng mình, chúng ta đã giữ cho mã **CommunicationsController** được sạch sẽ và dễ hiểu. Khi transmitter API được xác định, chúng ta đã viết **TransmitterAdapter** để thu hẹp khoảng cách. ADAPTOR đã đóng gói tương tác với API và cung cấp một nơi duy nhất để thay đổi khi API phát triển.
-**Figure 8-2**
-**Dự đoán transmitter**
+Trong Hình 8-2, bạn có thể thấy rằng chúng ta đã tách các lớp **CommunicationsController** khỏi transmitter API (nằm ngoài tầm kiểm soát của chúng ta và không được xác định). Bằng cách sử dụng interface ứng dụng cụ thể của riêng mình, chúng ta đã giữ cho mã **CommunicationsController** được sạch sẽ và dễ hiểu. Khi transmitter API được xác định, chúng ta đã viết **TransmitterAdapter** để thu hẹp khoảng cách. ADAPTOR đã đóng gói tương tác với API và cung cấp một nơi duy nhất để thay đổi khi API phát triển.  
+**Figure 8-2**  
+**Dự đoán transmitter**  
 ![Image tilte_2](../image/chap08_image02.png)
 Thiết kế này cũng cung cấp một đường lối rất thuận tiện trong mã, để kiểm tra. Sử dụng **FakeTransmitter** hợp lý, chúng ta có thể kiểm tra các lớp **CommunicationsController**. Chúng ta cũng có thể tạo các bài kiểm tra ranh giới sau khi có **TransmitterAPI** để đảm bảo rằng chúng ta đang sử dụng API đúng cách.
 ## Ranh giới sạch
@@ -181,8 +182,8 @@ Mã ở ranh giới cần có sự phân tách rõ ràng và các bài kiểm tr
 
 Chúng tôi quản lý ranh giới của bên thứ ba bằng cách có rất ít vị trí trong mã tham chiếu đến nó. Chúng tôi có thể bọc chúng như đã làm với **Map**, hoặc chúng tôi có thể sử dụng ADAPTER để chuyển đổi từ interface hoàn hảo của chúng tôi sang interface được cung cấp. Dù bằng cách nào thì mã của chúng tôi cũng được hiện tốt hơn, thúc đẩy việc sử dụng nhất quán nội bộ trên toàn bộ ranh giới và có ít thứ cần bảo trì hơn khi mã của bên thứ ba thay đổi.
 ## Thư mục
-**[BeckTDD]**: Test Driven Development, Kent Beck, Addison-Wesley, 2003.
-**[GOF]**: Design Patterns: Elements of Reusable Object Oriented Software, Gamma et al., Addison-Wesley, 1996.
-**[WELC]**: Working Effectively with Legacy Code, Addison-Wesley, 2004.
+**[BeckTDD]**: Test Driven Development, Kent Beck, Addison-Wesley, 2003.  
+**[GOF]**: Design Patterns: Elements of Reusable Object Oriented Software, Gamma et al., Addison-Wesley, 1996.  
+**[WELC]**: Working Effectively with Legacy Code, Addison-Wesley, 2004.  
 
 
