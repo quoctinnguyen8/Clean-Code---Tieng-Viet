@@ -162,7 +162,7 @@ Có một loại ranh giới khác, một loại ranh giới ngăn cách cái đ
 Một số năm trước, tôi là thành viên của nhóm phát triển phần mềm cho hệ thống thông tin liên lạc vô tuyến. Có một hệ thống con, “Transmitter,” mà chúng tôi ít biết về nó, và những người chịu trách nhiệm về hệ thống con chưa xác định interfce cho chúng. Chúng tôi không muốn phải dừng lại, vì vậy chúng tôi đã bắt đầu công việc của mình từ phần chưa biết của mã.
 
 Chúng ta đã có một ý tưởng khá tốt khi vấn đề xẩy. Trong quá trình làm việc, đôi khi chúng ta tù mù không nắm rõ được vấn đề, nhưng rồi qua thời gian chúng ra đã nhận thức được chúng ta đích xác cần gì, chúng ta mong muốn điều gì trong quá trình phát triển để rồi dựng lên interface giao tiếp đáp ứng cho mong muốn của chúng ta. Một điều gì đó như thế này:  
-*Mã transmitter được cung cấp và phát ra một biểu diễn tương tự như dữ liệu đến từ luồng.*
+>*Mã transmitter được cung cấp và phát ra một biểu diễn tương tự như dữ liệu đến từ luồng.*
 
 Chúng tôi không biết điều đó sẽ được thực hiện như thế nào vì API chưa được thiết kế. Vì vậy, chúng tôi quyết định làm việc sau.
 
