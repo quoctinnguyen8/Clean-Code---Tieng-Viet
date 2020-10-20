@@ -36,7 +36,7 @@ Sau đó, khi một số phần khác của mã cần truy cập vào cảm bi�
 ```java
   Sensor s = (Sensor) sensors.get(sensorId );
 ```
-Chúng tôi không chỉ nhìn thấy nó một lần mà nhiều lần xuyên suốt mã. Ứng dụng khách của mã này có trách nhiệm lấy một **Object** từ  **Map** và truyền nó đến đúng loại. Điều này hoạt động, nhưng nó không phải là mã sạch. Ngoài ra, mã này không kể câu chuyện của nó tốt như nó có thể. Khả năng đọc của mã này có thể được cải thiện đáng kể bằng cách sử dụng **generic**, như được hiển thị bên dưới:
+Chúng tôi không chỉ nhìn thấy nó một lần mà nhiều lần xuyên suốt mã. Mã này có trách nhiệm lấy một **Object** từ  **Map** và truyền nó đến đúng loại. Điều này hoạt động, nhưng nó không phải là mã sạch. Ngoài ra, mã này không kể câu chuyện của nó tốt như nó có thể. Khả năng đọc của mã này có thể được cải thiện đáng kể bằng cách sử dụng **generic**, như được hiển thị bên dưới:
 ```java
   Map<Sensor> sensors = new HashMap<Sensor>(); 
   ...
@@ -50,6 +50,7 @@ Cách tốt hơn để sử dụng **Map** có thể giống như sau. Không ng
 ```java
 public class Sensors {
   private Map sensors = new HashMap();
+
   public Sensor getById(String id) { 
     return (Sensor) sensors.get(id);
   }
@@ -111,8 +112,7 @@ public void testLogAddAppender() {
 Xem xét kỹ hơn một chút vào tài liệu, chúng ta thấy rằng hàm tạo **ConsoleAppender** mặc định là "chưa được đặt thông số cấu hình", điều này có vẻ không rõ ràng hoặc hữu ích. Nó giống như một lỗi hoặc ít nhất là sự không nhất quán trong **log4j**.
 
 Tìm kiếm trên google, đọc và thử nghiệm nhiều hơn, cuối cùng chúng tôi kết thúc với Listing 8-1. Chúng tôi đã khám phá ra rất nhiều điều về cách **log4j** hoạt động và chúng tôi đã mã hóa kiến thức đó thành một tập hợp các bài kiểm tra đơn vị đơn giản.
-
-**Listing 8-1**
+**Listing 8-1**  
 **LogTest.java**
 ```java
 public class LogTest { 
@@ -156,12 +156,12 @@ Không chỉ có giá trị ở thời điều hiện tại, kiểm tra học t�
 Kiểm tra học tập xác minh rằng các gói của bên thứ ba đang hoạt động theo cách chúng ta mong muốn. Sau khi được tích hợp, không có gì đảm bảo rằng mã của bên thứ ba sẽ vẫn tương thích với nhu cầu của chúng ta. Các tác giả ban đầu sẽ có lý do để thay đổi mã của họ để đáp ứng những yêu cầu mới. Họ sẽ sửa lỗi và thêm các tính năng mới. Với mỗi lần phát hành đều tiềm ẩn những rủi ro. Nếu gói của bên thứ ba thay đổi theo một cách nào đó không tương thích với các thử nghiệm đã viết, chúng ta sẽ tìm hiểu ngay.
 
 Cho dù bạn có cần kiến thức được cung cấp bởi các bài kiểm tra học tập hay không, một điều rõ ràng là bạn sẽ được hỗ trợ bởi một tập hợp các bài kiểm tra, thực hiện interface giống như cách mà mã của bạn sử dụng. Nếu không có các thử nghiệm này, có thể chúng ta sẽ bị cám dỗ ở lại với phiên bản cũ lâu hơn chúng ta nên làm.
-## Sử dụng mã chưa tồn tại
+## Sử dụng mã chưa tồn tại~~~~~~~~~~~~~~~~
 Có một loại ranh giới khác, một loại ranh giới ngăn cách cái đã biết và cái chưa biết. Thường có những chỗ trong mã mà kiến thức của chúng ta dường như bị mất. Đôi khi những gì ở bên kia ranh giới là không thể biết được (ít nhất là ngay lúc này). Và lúc này chúng ta chọn không đi xa hơn ranh giới.
 
-Một số năm trước, tôi là thành viên của nhóm phát triển phần mềm cho hệ thống thông tin liên lạc vô tuyến. Có một hệ thống con, “Transmitter,” mà chúng tôi ít biết về nó, và những người chịu trách nhiệm về hệ thống con chưa xác định interfce cho chúng. Chúng tôi không muốn phải dừng lại, vì vậy chúng tôi đã bắt đầu công việc của mình từ phần chưa biết của mã.
+Một số năm trước, tôi là thành viên của nhóm phát triển phần mềm cho hệ thống thông tin liên lạc vô tuyến. Có một hệ thống con, “Transmitter,” mà chúng tôi ít biết về nó, và những người chịu trách nhiệm về hệ thống con chưa xác định interface cho chúng. Chúng tôi không muốn phải dừng lại, vì vậy chúng tôi đã bắt đầu công việc của mình từ phần chưa biết của mã.
 
-Chúng ta đã có một ý tưởng khá tốt khi vấn đề xẩy. Trong quá trình làm việc, đôi khi chúng ta tù mù không nắm rõ được vấn đề, nhưng rồi qua thời gian chúng ra đã nhận thức được chúng ta đích xác cần gì, chúng ta mong muốn điều gì trong quá trình phát triển để rồi dựng lên interface giao tiếp đáp ứng cho mong muốn của chúng ta. Một điều gì đó như thế này:  
+Chúng ta đã có một ý tưởng khá tốt khi vấn đề xẩy ra. Trong quá trình làm việc, đôi khi chúng ta tù mù không nắm rõ được vấn đề, nhưng rồi qua thời gian chúng ra đã nhận thức được chúng ta đích xác cần gì, chúng ta mong muốn điều gì trong quá trình phát triển để rồi dựng lên interface giao tiếp đáp ứng cho mong muốn của chúng ta. Một điều gì đó như thế này:  
 >*Mã transmitter được cung cấp và phát ra một biểu diễn tương tự như dữ liệu đến từ luồng.*
 
 Chúng tôi không biết điều đó sẽ được thực hiện như thế nào vì API chưa được thiết kế. Vì vậy, chúng tôi quyết định làm việc sau.
