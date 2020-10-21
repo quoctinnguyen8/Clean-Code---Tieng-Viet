@@ -37,7 +37,7 @@ Một số bạn đọc đến đây có thể thông cảm với quyết địn
 
 Từ khi phát hành, chi phí duy trì bộ thử nghiệm của nhóm tôi đã tăng lên. Cuối cùng nó đã trở thành vấn đề lớn nhất cho các nhà phát triển. Khi các nhà quản lý hỏi tại sao lại cần thời gian lớn như vậy, các nhà phát triển đã đổ lỗi cho các bài kiểm tra. Cuối cùng, họ buộc phải loại bỏ hoàn toàn bộ thử nghiệm.
 
-Tuy nhiên, nếu không có các bài kiểm tra, họ sẽ mất khả năng đảm bảo rằng các thay đổi đối với mã của họ hoạt động như mong muốn. Nếu không có bài kiểm tra, họ không thể đảm bảo rằng các thay đổi đối với một phần trong hệ thống không ảnh hưởng đến các phần khác. Vì vậy, tỷ lệ sai sót bắt đầu tăng lên. Khi số lượng lỗi phát sinh ngoài ý muốn tăng lên, họ bắt đầu sợ phải thay đổi. Họ ngừng làm sạch mã sản xuất của mình vì sợ những thay đổi sẽ gây hại nhiều hơn là có lợi. Mã sản xuất bắt đầu không được bảo trì. Cuối cùng, không có thử nghiệm nào, mã sản xuất rối rắm và nhiều lỗi, khách hàng thất vọng và cảm giác mội nỗ lực đổ sông đổ bể.
+Tuy nhiên, nếu không có các bài kiểm tra, họ sẽ mất khả năng đảm bảo rằng các thay đổi đối với mã của họ hoạt động như mong muốn. Nếu không có bài kiểm tra, họ không thể đảm bảo rằng các thay đổi đối với một phần trong hệ thống không ảnh hưởng đến các phần khác. Vì vậy, tỷ lệ sai sót bắt đầu tăng lên. Khi số lượng lỗi phát sinh ngoài ý muốn tăng lên, họ bắt đầu sợ phải thay đổi. Họ ngừng làm sạch mã sản xuất của mình vì sợ những thay đổi sẽ gây hại nhiều hơn là có lợi. Mã sản xuất bắt đầu không được bảo trì. Cuối cùng, không có thử nghiệm nào, mã sản xuất rối rắm và nhiều lỗi, khách hàng thất vọng và cảm giác mọi nỗ lực đổ sông đổ bể.
 
 Theo một cách nào đó họ đã đúng. Nỗ lực kiểm tra đã thất bại. Nhưng quyết định để cho phép các bài kiểm tra lộn xộn là nguyên nhân của sự thất bại đó. Nếu giữ các bài kiểm tra của mình rõ ràng, tường minh, nỗ lực kiểm tra sẽ không thất bại. Tôi có thể nói điều này một cách chắc chắn bởi vì tôi đã tham gia và huấn luyện rất nhiều đội đã thành công với các bài kiểm tra đơn vị trong sạch.
 
@@ -54,8 +54,8 @@ Vì vậy, nếu các bài kiểm tra bị bẩn, thì khả năng thay đổi m
 ## Kiểm tra sạch
 Điều gì tạo nên một bài kiểm tra sạch? Ba thứ. Khả năng đọc, khả năng đọc và khả năng đọc. Khả năng đọc có lẽ còn quan trọng hơn trong các bài kiểm tra đơn vị so với trong mã sản xuất. Điều gì làm cho các bài kiểm tra có thể đọc được? Điều tương tự làm cho tất cả mã có thể đọc được: rõ ràng, đơn giản và mật độ của biểu thức. Trong một bài kiểm tra, bạn muốn biểu đạt nhiều với ít cách diễn đạt nhất có thể.
 
-Hãy xem xét mã từ FitNesse trong Listing 9-1. Ba bài kiểm tra này khó hiểu và chắc chắn có thể được cải thiện. Đầu tiên, có một lượng lớn mã trùng lặp [G5] trong các lệnh gọi lặp đi lặp lại tới **addPage** và **assertSubString**. Quan trọng hơn, mã này chỉ được tải với các chi tiết can thiệp vào tính biểu đạt của bài kiểm tra.
-**Listing 9-1**
+Hãy xem xét mã từ FitNesse trong Listing 9-1. Ba bài kiểm tra này khó hiểu và chắc chắn có thể được cải thiện. Đầu tiên, có một lượng lớn mã trùng lặp [G5] trong các lệnh gọi lặp đi lặp lại tới **addPage** và **assertSubString**. Quan trọng hơn, mã này chỉ được tải với các chi tiết can thiệp vào tính biểu đạt của bài kiểm tra.   
+**Listing 9-1**   
 **SerializedPageResponderTest.java**
 ```java
 public void testGetPageHieratchyAsXml() throws Exception {
@@ -102,6 +102,7 @@ public void testGetPageHieratchyAsXmlDoesntContainSymbolicLinks() throws Excepti
     assertSubString("<name>ChildOne</name>", xml); 
     assertNotSubString("SymPage", xml);
 }
+
 public void testGetDataAsHtml() throws Exception {
     crawler.addPage(root, PathParser.parse("TestPageOne"), "test page");
     request.setResource("TestPageOne"); 
@@ -168,8 +169,8 @@ API thử nghiệm này không được thiết kế trước; thay vào đó, n
 ## Tiêu chuẩn kép
 Theo một nghĩa nào đó, đội mà tôi đã đề cập ở đầu chương này đã làm đúng. Mã trong API thử nghiệm có một bộ tiêu chuẩn kỹ thuật khác với mã sản xuất. Nó vẫn phải đơn giản, ngắn gọn và diễn đạt, nhưng nó không cần phải hiệu quả như mã sản xuất. Xét cho cùng, nó chạy trong môi trường thử nghiệm, không phải môi trường sản xuất và hai môi trường đó có những nhu cầu rất khác nhau.
 
-Hãy xem xét thử nghiệm trong Listing 9-3. Tôi đã viết bài kiểm tra này như một phần của hệ thống kiểm soát môi trường mà tôi đang tạo mẫu. Nếu không đi sâu vào chi tiết, bạn có thể biết rằng bài kiểm tra này kiểm tra xem báo động nhiệt độ thấp, lò sưởi và quạt gió đều được bật khi nhiệt độ “quá lạnh”.
-**Listing 9-3**
+Hãy xem xét thử nghiệm trong Listing 9-3. Tôi đã viết bài kiểm tra này như một phần của hệ thống kiểm soát môi trường mà tôi đang tạo mẫu. Nếu không đi sâu vào chi tiết, bạn có thể biết rằng bài kiểm tra này kiểm tra xem báo động nhiệt độ thấp, lò sưởi và quạt gió đều được bật khi nhiệt độ “quá lạnh”.   
+**Listing 9-3**  
 **EnvironmentControllerTest.java**
 ```java
 @Test
@@ -187,8 +188,8 @@ Tất nhiên, có rất nhiều chi tiết ở đây. Ví dụ, chức năng **t
 
 Lưu ý, khi bạn đọc bài kiểm tra, mắt bạn cần phải đảo qua lại giữa tên của trạng thái được kiểm tra và phán đoán trạng thái được kiểm tra. Bạn thấy **heaterState**, và sau đó mắt bạn liếc sang trái để thấy **assertTrue**. Bạn thấy **coolerState** và mắt bạn phải theo dõi bên trái để thấy **assertFalse**. Điều này là tẻ nhạt và không đáng tin cậy. Nó làm cho bài kiểm tra khó đọc.
 
-Tôi đã cải thiện khả năng đọc của bài kiểm tra này rất nhiều bằng cách chuyển nó thành Listing 9-4.
-**Listing 9-4**
+Tôi đã cải thiện khả năng đọc của bài kiểm tra này rất nhiều bằng cách chuyển nó thành Listing 9-4.   
+**Listing 9-4**   
 **EnvironmentControllerTest.java (refactored)**
 ```java
 @Test
@@ -199,8 +200,8 @@ public void turnOnLoTempAlarmAtThreshold() throws Exception {
 ```
 Tất nhiên tôi đã ẩn chi tiết của hàm **tic** bằng cách tạo một hàm **wayTooCold**. Nhưng điều cần lưu ý là chuỗi kỳ lạ trong **assertEquals**. Chữ hoa có nghĩa là “bật”, chữ thường có nghĩa là “tắt” và các chữ cái luôn theo thứ tự sau: **{heater, blower, cooler, hi-temp-alarm, lo-temp-alarm}**.
 
-Mặc dù điều này gần như là vi phạm quy tắc về lập bản đồ tâm trí, nó có vẻ phù hợp trong trường hợp này. Chú ý, một khi bạn biết nghĩa, mắt bạn lướt qua chuỗi đó và bạn có thể nhanh chóng diễn giải kết quả. Đọc bài kiểm tra gần như trở thành một niềm vui. Chỉ cần xem qua Listing 9-5 và xem mức độ dễ hiểu của các thử nghiệm này.
-**Listing 9-5**
+Mặc dù điều này gần như là vi phạm quy tắc về lập bản đồ tâm trí, nó có vẻ phù hợp trong trường hợp này. Chú ý, một khi bạn biết nghĩa, mắt bạn lướt qua chuỗi đó và bạn có thể nhanh chóng diễn giải kết quả. Đọc bài kiểm tra gần như trở thành một niềm vui. Chỉ cần xem qua Listing 9-5 và xem mức độ dễ hiểu của các thử nghiệm này.   
+**Listing 9-5**   
 **EnvironmentControllerTest.java (bigger selection)**
 ```java
 @Test
@@ -227,8 +228,8 @@ public void turnOnLoTempAlarmAtThreshold() throws Exception {
     assertEquals("HBchL", hw.getState()); 
 }
 ```
-Hàm **getState** được hiển thị trong Listing 9-6. Lưu ý rằng đây không phải là mã hiệu quả. Để làm cho nó hiệu quả, có lẽ tôi nên sử dụng một StringBuffer.
-**Listing 9-6**
+Hàm **getState** được hiển thị trong Listing 9-6. Lưu ý rằng đây không phải là mã hiệu quả. Để làm cho nó hiệu quả, có lẽ tôi nên sử dụng một StringBuffer.   
+**Listing 9-6**   
 **MockControlHardware.java**
 ```java
 public String getState() {
@@ -247,8 +248,8 @@ public String getState() {
 ## Một xác nhận cho mỗi bài kiểm tra
 Có một trường phái tư tưởng nói rằng mọi hàm kiểm tra trong một bài kiểm tra JUnit nên có một và chỉ một câu lệnh **assert**. Quy tắc này có vẻ hà khắc, nhưng lợi thế có thể được nhìn thấy trong Listing 9-5. Những thử nghiệm đó đưa ra một kết luận duy nhất nhanh chóng và dễ hiểu.
 
-Nhưng còn Listing 9-2 thì sao? Có vẻ không hợp lý khi bằng cách nào đó chúng ta có thể dễ dàng hợp nhất xác nhận rằng đầu ra là XML và nó chứa các chuỗi con nhất định. Tuy nhiên, chúng ta có thể chia thử nghiệm thành hai thử nghiệm riêng biệt, mỗi thử nghiệm có **assertion** cụ thể của riêng nó, như được hiển thị trong Listing 9-7.
-**Listing 9-7**
+Nhưng còn Listing 9-2 thì sao? Có vẻ không hợp lý khi bằng cách nào đó chúng ta có thể dễ dàng hợp nhất xác nhận rằng đầu ra là XML và nó chứa các chuỗi con nhất định. Tuy nhiên, chúng ta có thể chia thử nghiệm thành hai thử nghiệm riêng biệt, mỗi thử nghiệm có **assertion** cụ thể của riêng nó, như được hiển thị trong Listing 9-7.   
+**Listing 9-7**   
 **SerializedPageResponderTest.java (Single Assert)**
 ```java
 public void testGetPageHierarchyAsXml() throws Exception { 
@@ -271,11 +272,11 @@ Chúng ta có thể loại bỏ sự trùng lặp bằng cách sử dụng mẫu
 
 Tôi nghĩ rằng quy tắc **assert** duy nhất là một hướng dẫn tốt. Tôi thường cố gắng tạo một ngôn ngữ thử nghiệm miền cụ thể hỗ trợ nó, như trong Listing 9-5. Nhưng tôi không ngại đặt nhiều hơn một **assert** trong một bài kiểm tra. Tôi nghĩ điều tốt nhất chúng ta có thể nói là số lượng **assert** trong một bài kiểm tra phải được tối thiểu.
 ## Khái niệm đơn cho mỗi thử nghiệm
-Có lẽ một quy tắc tốt là chỉ muốn kiểm tra một việc duy nhất trong mỗi hàm kiểm tra. Chúng a không muốn các chức năng thử nghiệm dài dòng và chồng chéo nhau. Listing 9-8 là một ví dụ về một thử nghiệm như vậy. Bài kiểm tra này nên được chia thành ba bài kiểm tra độc lập vì nó kiểm tra ba thứ độc lập. Việc hợp nhất tất cả chúng lại với nhau thành cùng một chức năng buộc người đọc phải tìm ra lý do tại sao mỗi phần lại ở đó và điều gì đang được kiểm tra bởi phần đó.
+Có lẽ một quy tắc tốt là chỉ muốn kiểm tra một việc duy nhất trong mỗi hàm kiểm tra. Chúng ta không muốn các chức năng thử nghiệm dài dòng và chồng chéo nhau. Listing 9-8 là một ví dụ về một thử nghiệm như vậy. Bài kiểm tra này nên được chia thành ba bài kiểm tra độc lập vì nó kiểm tra ba thứ độc lập. Việc hợp nhất tất cả chúng lại với nhau thành cùng một chức năng buộc người đọc phải tìm ra lý do tại sao mỗi phần lại ở đó và điều gì đang được kiểm tra bởi phần đó.   
 **Listing 9-8**
 ```java
 /**
-* Miscellaneous tests for the addMonths() method. */
+ * Miscellaneous tests for the addMonths() method. */
 public void testAddMonths() {
     SerialDate d1 = SerialDate.createInstance(31, 5, 2004);
     
@@ -306,7 +307,7 @@ Nói như thế này, bạn có thể thấy rằng có một quy tắc chung �
 
 Vì vậy, không phải nhiều **asserts** trong mỗi phần của Listing 9-8 gây ra sự cố. Đúng hơn, thực tế là có nhiều hơn một khái niệm đang được thử nghiệm. Vì vậy, có lẽ quy tắc tốt nhất là bạn nên giảm thiểu số lượng **asserts** cho mỗi khái niệm và chỉ kiểm tra một **asserts** cho mỗi hàm kiểm tra.
 ## F.I.R.S.T.
-Kiểm tra sạch tuân theo năm quy tắc tạo thành từ viết tắt ở trên:
+Kiểm tra sạch tuân theo năm quy tắc tạo thành từ viết tắt ở trên:   
 **Fast** Kiểm tra phải nhanh chóng. Nó nên chạy thật nhanh. Khi các bài kiểm tra chạy chậm, bạn sẽ không muốn chạy chúng thường xuyên. Nếu bạn không chạy chúng thường xuyên, bạn sẽ không phát hiện ra các vấn đề đủ sớm để khắc phục chúng một cách dễ dàng. Bạn sẽ không cảm thấy thoải mái khi xóa mã. Cuối cùng thì mã sẽ bắt đầu không được bảo trì.
 
 **Independent** Các bài kiểm tra độc lập không nên phụ thuộc vào nhau. Một thử nghiệm không nên thiết lập các điều kiện cho thử nghiệm tiếp theo. Bạn sẽ có thể chạy từng bài kiểm tra một cách độc lập và chạy các bài kiểm tra theo bất kỳ thứ tự nào bạn muốn. Khi các bài kiểm tra phụ thuộc vào nhau, thì bài kiểm tra đầu tiên không thành công sẽ gây ra hàng loạt các thất bại phía dưới, làm cho việc chẩn đoán trở nên khó khăn và che giấu các lỗi phía dưới.
@@ -322,7 +323,7 @@ Tôi nghĩ rằng cả một cuốn sách có thể được viết về các b�
 Nếu bạn không quan tâm các bài kiểm tra, thì mã của bạn cũng sẽ không được để ý. Giữ các bài kiểm tra của bạn sạch sẽ.
 
 ## Thư viện
-**[RSpec]**: RSpec: Behavior Driven Development for Ruby Programmers, Aslak Hellesøy, David Chelimsky, Pragmatic Bookshelf, 2008.
+**[RSpec]**: RSpec: Behavior Driven Development for Ruby Programmers, Aslak Hellesøy, David Chelimsky, Pragmatic Bookshelf, 2008.   
 **[GOF]**: Design Patterns: Elements of Reusable Object Oriented Software, Gamma et al., Addison-Wesley, 1996.
 
 
