@@ -5,7 +5,7 @@ Cho đến nay trong cuốn sách này, chúng ta đã tập trung vào cách vi
 ## Tổ chức lớp
 Theo quy ước Java tiêu chuẩn, một lớp phải bắt đầu bằng một danh sách các biến. Các **public static constants**, nếu có, nên xuất hiện trước. Sau đó là các biến **private static**, tiếp theo là các biến **private**. Ít khi có lý do chính đáng để có một biến là **public**.  
 
-Các hàm **public** nên tuân theo danh sách các biến. Chúng tôi muốn đặt các tiện ích **private** được gọi bởi một chức năng **public** ngay sau chức năng đó. Điều này tuân theo quy tắc nhìn xuống và giúp chương trình đọc giống như một văn.
+Các hàm **public** nên tuân theo danh sách các biến. Chúng tôi muốn đặt các tiện ích **private** được gọi bởi một chức năng **public** ngay sau chức năng đó. Điều này tuân theo quy tắc nhìn xuống và giúp chương trình đọc giống như một bài văn.
 ## Đóng gói
 Chúng ta muốn giữ các biến và hàm của mình ở chế độ riêng tư, nhưng không nên quá cứng nhắc về nó. Đôi khi cần một biến hoặc một hàm **protected** để có thể sử dụng kiểm tra. Quy tắc kiểm tra nên được ưu tiên. Nếu một thử nghiệm trong cùng một gói cần gọi một hàm hoặc truy cập một biến, chúng tôi sẽ đặt nó là **protected** hoặc đặt nó trong phạm vi gói. Tuy nhiên, trước tiên, chúng ta sẽ tìm cách duy trì quyền riêng tư. Nới lỏng sự đóng gói luôn là phương sách cuối cùng.
 ## Lớp nên nhỏ!  
@@ -13,7 +13,7 @@ Quy tắc đầu tiên của các lớp là chúng phải nhỏ. Quy tắc thứ
 
 Với các chức năng, chúng ta đo kích thước bằng cách đếm số dòng. Với các lớp, chúng tôi sử dụng một thước đo khác. Chúng ta tính đến trách nhiệm.
 
-Listing kê 10-1 phác thảo một lớp, **SuperDashboard**, hiển thị khoảng 70 phương thức **public**. Hầu hết các nhà phát triển sẽ đồng ý rằng nó có kích thước hơi quá lớn. Một số nhà phát triển có thể coi **SuperDashboard** là **“lớp học của Chúa”**.   
+Listing 10-1 phác thảo một lớp, **SuperDashboard**, hiển thị khoảng 70 phương thức **public**. Hầu hết các nhà phát triển sẽ đồng ý rằng nó có kích thước hơi quá lớn. Một số nhà phát triển có thể coi **SuperDashboard** là **“lớp học của Chúa”**.   
 **Listing 10-1**  
 **Quá nhiều trách nhiệm**  
 ```java
@@ -113,7 +113,7 @@ Nguyên tắc Trách nhiệm Đơn lẻ (SRP) nêu rõ rằng một lớp hoặc
 
 Lớp **SuperDashboard** có vẻ nhỏ trong Listing 10-2, nhưng có hai lý do để thay đổi. **Đầu tiên**, nó theo dõi thông tin về phiên bản dường như cần được cập nhật mỗi khi phần mềm được xuất xưởng. **Thứ hai**, nó quản lý các thành phần Java Swing (nó là một dẫn xuất của **JFrame**, đại diện Swing của một cửa sổ GUI cấp cao nhất). Không nghi ngờ gì nữa, chúng ta sẽ muốn cập nhật số phiên bản nếu chúng tôi thay đổi bất kỳ mã Swing nào, tuy nhiên có trường hợp khác đó là: Chúng ta có thể thay đổi thông tin phiên bản dựa trên những thay đổi với mã khác trong hệ thống.
 
-Cố gắng xác định trách nhiệm (lý do để thay đổi) thường giúp chúng ta nhận ra và tạo ra những hàm tượng tốt hơn trong mã của mình. Chúng ta có thể dễ dàng trích xuất cả ba phương thức **SuperDashboard** xử lý thông tin phiên bản vào một lớp riêng biệt có tên **Version**. (Xem Listing 10-3.) Lớp **Version** là một cấu trúc có tiềm năng cao để sử dụng lại trong các ứng dụng khác!   
+Cố gắng xác định trách nhiệm (lý do để thay đổi) thường giúp chúng ta nhận ra và tạo ra những hàm tốt hơn trong mã của mình. Chúng ta có thể dễ dàng trích xuất cả ba phương thức **SuperDashboard** xử lý thông tin phiên bản vào một lớp riêng biệt có tên **Version**. (Xem Listing 10-3.) Lớp **Version** là một cấu trúc có tiềm năng cao để sử dụng lại trong các ứng dụng khác!   
 **Listing 10-3**  
 **Một lớp trách nhiệm duy nhất**
 ```java
@@ -123,7 +123,7 @@ public class Version {
     public int getBuildNumber();
 }
 ```
-SRP là một trong những khái niệm quan trọng nhất trong thiết kế OO. Đây cũng là một trong những khái niệm đơn giản để hiểu và tuân thủ. Tuy nhiên, kỳ lạ là SRP thường là nguyên tắc thiết kế lớp bị  phạm nhiều nhất. Chúng tôi thường xuyên gặp phải các lớp làm quá nhiều thứ. Tại sao?
+SRP là một trong những khái niệm quan trọng nhất trong thiết kế OO. Đây cũng là một trong những khái niệm đơn giản để hiểu và tuân thủ. Tuy nhiên, kỳ lạ là SRP thường là nguyên tắc thiết kế lớp bị vi phạm nhiều nhất. Chúng tôi thường xuyên gặp phải các lớp làm quá nhiều thứ. Tại sao?
 
 Làm cho phần mềm chạy và làm cho phần mềm sạch là hai việc khác nhau. Hầu hết chúng ta đều nghĩ ưu tiên phần mềm chạy được trước, vì vậy chúng ta tập trung vào việc làm cho mã của mình chạy đúng ngữ cảnh nhiều hơn là tính tổ chức và sự sạch sẽ. Điều này hoàn toàn phù hợp. Tuy nhiên duy trì sự tách biệt cũng quan trọng trong việc lập trình như việc chạy được các chương trình vậy.
 
@@ -137,7 +137,7 @@ Mỗi hệ thống lớn sẽ chứa một lượng lớn logic và độ phức
 
 Nhắc lại các điểm  trọng: Chúng ta muốn hệ thống của mình bao gồm nhiều lớp nhỏ, không phải một vài lớp lớn. Mỗi lớp nhỏ chứa đựng **một** khả năng đáp ứng duy nhất, có một lý do duy nhất để thay đổi và cộng tác với một vài lớp khác để đạt được các hành vi hệ thống mong muốn.
 ## Sự gắn kết
-Các lớp nên có một số lượng nhỏ các biến **instance**. Mỗi phương thức của một lớp nên thao tác với một hoặc nhiều biến đó. Nói chung, một phương thức càng thao tác nhiều biến thì phương thức đó càng gắn kết với lớp của nó. Một lớp trong đó mỗi biến được sử dụng bởi mỗi phương thức là tối đa gắn kết.
+Các lớp nên có một số lượng nhỏ các biến **instance**. Mỗi phương thức của một lớp nên thao tác với một hoặc nhiều biến đó. Nói chung, một phương thức càng thao tác với nhiều biến thì phương thức đó càng gắn kết với lớp của nó. Một lớp trong đó mỗi biến được sử dụng bởi mỗi phương thức là tối đa gắn kết.
 
 Nói chung, không nên và cũng không thể tạo các lớp gắn kết tối đa như vậy; mặt khác, chúng ta muốn sự gắn kết cao. Khi tính liên kết cao, có nghĩa là các phương thức và biến của lớp là đồng phụ thuộc và gắn kết với nhau như một tổng thể logic.
 
@@ -392,8 +392,7 @@ public class PrimeGenerator {
     }
 
     private static boolean isMultipleOfNthPrimeFactor(int candidate, int n) {
-        return
-                candidate == smallestOddNthMultipleNotLessThanCandidate(candidate, n);
+        return candidate == smallestOddNthMultipleNotLessThanCandidate(candidate, n);
     }
 
     private static int
@@ -420,7 +419,7 @@ Thay đổi được thực hiện bằng cách viết một bộ thử nghiệm
 ## Tổ chức để thay đổi
 Đối với hầu hết các hệ thống, sự thay đổi là liên tục. Mọi thay đổi đều khiến chúng ta có nguy cơ khiến phần còn lại của hệ thống không còn hoạt động như dự kiến. Trong một hệ thống sạch, chúng ta tổ chức các lớp của mình để giảm nguy cơ phải thay đổi.
 
-Lớp **Sql** trong Liệt kê 10-9 được sử dụng để tạo các chuỗi SQL được định dạng đúng với siêu dữ liệu thích hợp. Đây là một công việc đang được tiến hành và do đó, chưa hỗ trợ chức năng SQL như câu lệnh **update**. Khi đến lúc, lớp **Sql** hỗ trợ chức năng **update**, chúng ta sẽ phải **"mở"** lớp này để thực hiện sửa đổi. Vấn đề với việc mở một lớp học là nó dẫn đến rủi ro. Bất kỳ sửa đổi nào đối với lớp đều có khả năng phá vỡ mã trong lớp. Nó phải được kiểm tra lại hoàn toàn.
+Lớp **Sql** trong Liệt kê 10-9 được sử dụng để tạo các chuỗi SQL được định dạng đúng với siêu dữ liệu thích hợp. Đây là một công việc đang được tiến hành và do đó, chưa hỗ trợ chức năng SQL như câu lệnh **update**. Khi đến lúc, lớp **Sql** hỗ trợ chức năng **update**, chúng ta sẽ phải **"mở"** lớp này để thực hiện sửa đổi. Vấn đề với việc mở một lớp học là nó dẫn đến rủi ro. Bất kỳ sửa đổi nào đối với lớp đều có khả năng phá vỡ mã trong lớp. Nó phải được kiểm tra lại hoàn toàn.   
 **Listing 10-9**   
 **A class that must be opened for change**  
 ```java
