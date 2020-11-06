@@ -212,5 +212,250 @@ Trên thực tế, cách kiến trúc EJB xử lý tính **persistence**, bảo 
 Trong AOP, các cấu trúc mô-đun được gọi là các khía cạnh chỉ định điểm nào trong hệ thống cần được sửa đổi hành vi của chúng theo một cách nhất quán nào đó nhằm hỗ trợ một mối quan hệ cụ thể. Đặc tả này được thực hiện bằng cách sử dụng cơ chế khai báo hoặc lập trình rút gọn.
 
 Sử dụng persistence làm ví dụ, bạn sẽ khai báo các đối tượng và thuộc tính (hoặc các mẫu của chúng) nên được duy trì và sau đó ủy quyền các nhiệm vụ persistence cho khung persistence của bạn. Các sửa đổi hành vi được thực hiện không xâm phạm đến mã đích bởi khung AOP. Chúng ta hãy xem xét ba khía cạnh hoặc các cơ chế giống như khía cạnh trong Java.
+## Java Proxies
+Các proxy Java phù hợp với các tình huống đơn giản, chẳng hạn như chứa các cuộc gọi phương thức trong các đối tượng hoặc lớp riêng lẻ. Tuy nhiên, các proxy động được cung cấp trong JDK chỉ hoạt động với **interfaces**. Đối với các lớp proxy, bạn phải sử dụng thư viện thao tác byte-code, chẳng hạn như CGLIB, ASM hoặc Javassist.  
+
+Listing 11-3 hiển thị khung cho proxy JDK để cung cấp hỗ trợ lâu dài cho ứng dụng Bank, chỉ bao gồm các phương pháp getting và setting danh sách tài khoản.  
+**Listing 11-3**  ****
+**JDK Proxy Example**
+```java
+// Bank.java (suppressing package names...)
+import java.utils.*;
+
+// The abstraction of a bank.
+public interface Bank {
+    Collection<Account> getAccounts();
+
+    void setAccounts(Collection<Account> accounts);
+}
+
+// BankImpl.java
+import java.utils.*;
+
+// The “Plain Old Java Object” (POJO) implementing the abstraction.
+public class BankImpl implements Bank {
+    private List<Account> accounts;
+
+    public Collection<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Collection<Account> accounts) {
+        this.accounts = new ArrayList<Account>();
+        for (Account account : accounts) {
+            this.accounts.add(account);
+        }
+    }
+}
+
+// BankProxyHandler.java
+import java.lang.reflect.*;
+import java.util.*;
+
+// “InvocationHandler” required by the proxy API.
+public class BankProxyHandler implements InvocationHandler {
+    private Bank bank;
+
+    public BankHandler(Bank bank) {
+        this.bank = bank;
+    }
+
+    // Method defined in InvocationHandler
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
+        String methodName = method.getName();
+        if (methodName.equals("getAccounts")) {
+            bank.setAccounts(getAccountsFromDatabase());
+            return bank.getAccounts();
+        } else if (methodName.equals("setAccounts")) {
+            bank.setAccounts((Collection<Account>) args[0]);
+            setAccountsToDatabase(bank.getAccounts());
+            return
+        } else {
+            // ...
+        }
+    }
+
+    // Lots of details here:
+    protected Collection<Account> getAccountsFromDatabase() {
+        // ...
+    }
+
+    protected void setAccountsToDatabase(Collection<Account> accounts) {
+        // ...
+    }
+}
+
+// Somewhere else...
+Bank bank = (Bank) Proxy.newProxyInstance( 
+        Bank.class.getClassLoader(),
+        new Class[] { Bank.class },
+        new BankProxyHandler(new BankImpl())
+);
+```
+Chúng tôi đã xác định một interface **Bank**, sẽ được bao bọc bởi proxy và *Đối tượng Java thuần (POJO)*, **BankImpl**, thực hiện logic nghiệp vụ. (Chúng tôi sẽ sớm truy cập lại POJO).
+
+API Proxy yêu cầu một đối tượng **InvocationHandler** mà nó gọi để triển khai bất kỳ lệnh gọi phương thức Bank nào được thực hiện cho proxy. **BankProxyHandler** của chúng tôi sử dụng API phản chiếu Java để ánh xạ các lệnh gọi phương thức chung với các phương thức tương ứng trong **BankImpl**, v.v.
+
+Có rất nhiều mã ở đây và nó tương đối phức tạp, ngay cả đối với trường hợp đơn giản này. Việc sử dụng một trong các thư viện byte-manipulation cũng tương tự như vậy. “Khối lượng” và độ phức tạp của mã này là hai trong số những hạn chế của proxy. Khó tạo ra mã sạch! Ngoài ra, proxy không cung cấp cơ chế chỉ định "điểm" thực thi trên toàn hệ thống, cần thiết cho một giải pháp AOP thực sự.
+## Khung AOP thuần Java
+May mắn thay, hầu hết các proxy boilerplate có thể được xử lý tự động bằng các công cụ. Proxy được sử dụng nội bộ trong một số khuôn khổ Java, ví dụ: Spring AOP và JBoss AOP, để triển khai các khía cạnh trong Java thuần túy. Trong Spring, bạn viết logic nghiệp vụ của mình dưới dạng **Đối tượng Java thuần**. POJO hoàn toàn tập trung vào miền của họ. Chúng không phụ thuộc vào các khuôn khổ doanh nghiệp (hoặc bất kỳ miền nào khác). Do đó, chúng đơn giản hơn về mặt khái niệm và kiểm tra hơn. Tính đơn giản tương đối giúp bạn dễ dàng hơn trong việc triển khai các yêu cầu người dùng tương ứng một cách chính xác và duy trì và phát triển mã cho các  cầu trong tương lai.
+
+Bạn kết hợp cơ sở hạ tầng ứng dụng bắt buộc, bao gồm các mối quan tâm xuyên suốt như tính bền bỉ, giao dịch, bảo mật, bộ nhớ đệm, chuyển đổi dự phòng, v.v. bằng cách sử dụng các tệp cấu hình khai báo hoặc API. Trong nhiều trường hợp, bạn đang thực sự chỉ định các khía cạnh thư viện Spring hoặc JBoss, nơi khung công tác xử lý cơ chế sử dụng proxy Java hoặc thư viện byte-code một cách minh bạch cho người dùng. Các khai báo này thúc đẩy vùng chứa phụ thuộc (DI), khởi tạo các đối tượng chính và kết nối chúng lại với nhau theo yêu cầu.
+
+Listing 11-4 hiển thị một đoạn điển hình của tệp cấu hình Spring V2.5, app.xml    
+**Listing 11-4**   
+**Spring 2.X configuration file**
+```xml
+<beans>
+    ...
+    <bean id="appDataSource"
+          class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close"
+          p:driverClassName="com.mysql.jdbc.Driver"
+          p:url="jdbc:mysql://localhost:3306/mydb"
+          p:username="me"/>
+
+    <bean id="bankDataAccessObject"
+          class="com.example.banking.persistence.BankDataAccessObject"
+          p:dataSource-ref="appDataSource"/>
+
+    <bean id="bank"
+          class="com.example.banking.model.Bank"
+          p:dataAccessObject-ref="bankDataAccessObject"/>
+    ...
+</beans>
+```
+Mỗi “bean” giống như một phần của “Russian doll” lồng vào nhau, với một đối tượng miền cho **Bank** được ủy quyền (bọc) bởi một đối tượng truy cập dữ liệu (DAO), chính nó được cấp phép bởi nguồn dữ liệu trình điều khiển JDBC. (See Figure 11-3).  
+**Figure 11-3**  
+**The “Russian doll” of decorators**
+![Image tilte_4](../image/chap11_image04.png)
+
+Khách hàng tin rằng nó đang gọi **getAccounts()** trên một đối tượng **Bank**, nhưng nó thực sự đang nói chuyện với phần ngoài cùng của một tập hợp các đối tượng DECORATOR lồng nhau để mở rộng hành vi cơ bản của **Bank** POJO. Chúng tôi có thể thêm các trình trang trí khác cho các giao dịch, bộ nhớ đệm, v.v.
+
+Trong ứng dụng, cần có một vài dòng để hỏi vùng chứa DI cho các đối tượng cấp cao nhất trong hệ thống, như được chỉ định trong tệp XML.
+```java
+    XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("app.xml", getClass()));
+    Bank bank = (Bank) bf.getBean("bank");
+```
+Bởi vì yêu cầu quá ít dòng mã Java dành riêng cho Spring, ứng dụng gần như được tách hoàn toàn khỏi Spring, loại bỏ tất cả các vấn đề liên kết chặt chẽ của các hệ thống như EJB2.
+
+Mặc dù XML có thể dài dòng và khó đọc, “policy” được chỉ định trong các tệp hình dung này đơn giản hơn so với proxy và logic phức tạp được ẩn khỏi chế độ xem và được tạo tự động. Kiểu kiến trúc này hấp dẫn đến mức khung hoạt động giống như Spring dẫn đến việc đại tu hoàn toàn tiêu chuẩn EJB cho phiên bản 3. EJB3 phần lớn tuân theo mô hình Spring hỗ trợ khai báo các mối quan tâm xuyên suốt bằng cách sử dụng tệp cấu hình XML và/hoặc chú thích Java 5.
+
+Listing 11-5 cho thấy đối tượng **Bank** của chúng tôi được viết lại bằng EJB3   
+**Listing 11-5**  
+**An EBJ3 Bank EJB**  
+```java
+package com.example.banking.model;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+
+@Entity
+@Table(name = "BANKS")
+public class Bank implements java.io.Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @Embeddable // An object “inlined” in Bank’s DB row
+    public class Address {
+        protected String streetAddr1;
+        protected String streetAddr2;
+        protected String city;
+        protected String state;
+        protected String zipCode;
+    }
+
+    @Embedded
+    private Address address;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "bank")
+    private Collection<Account> accounts = new ArrayList<Account>();
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void addAccount(Account account) {
+        account.setBank(this);
+        accounts.add(account);
+    }
+
+    public Collection<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Collection<Account> accounts) {
+        this.accounts = accounts;
+    }
+}
+```
+Mã này sạch hơn nhiều so với mã EJB2 gốc. Một số chi tiết về thực thể vẫn còn ở đây, có trong các chú thích. Tuy nhiên, vì không có thông tin nào nằm ngoài các chú thích, nên mã sạch, rõ ràng và do đó dễ dàng để kiểm thử, bảo trì, v.v.
+
+Một số hoặc tất cả thông tin liên tục trong các chú thích có thể được chuyển đến các bộ mô tả triển khai XML, nếu muốn, để lại một POJO thực sự thuần túy. Nếu các chi tiết ánh xạ liên tục không thay đổi thường xuyên, nhiều nhóm có thể chọn giữ lại các chú thích, nhưng ít có nhược điểm có hại hơn nhiều so với tính xâm lấn của EJB2.
+## AspectJ Aspects
+Cuối cùng, công cụ đầy đủ tính năng nhất để phân tách mối quan tâm qua các khía cạnh là ngôn ngữ AspectJ, một phần mở rộng của Java cung cấp hỗ trợ “hạng nhất” cho các khía cạnh dưới dạng cấu trúc mô-đun. Các phương pháp tiếp cận Java thuần túy do Spring AOP và JBoss AOP cung cấp là đủ cho 80–90% các trường hợp mà các khía cạnh hữu ích nhất. Tuy nhiên, AspectJ cung cấp một bộ công cụ rất phong phú và mạnh mẽ để phân tách các mối quan tâm. Hạn chế của AspectJ là cần phải sử dụng một số công cụ mới và học các cấu trúc ngôn ngữ mới và cách sử dụng thành ngữ.
+
+Các vấn đề về áp dụng đã được giảm thiểu một phần nhờ một “dạng chú thích” được giới thiệu gần đây của AspectJ, nơi các chú thích của Java 5 được sử dụng để xác định các khía cạnh bằng cách sử dụng mã Java thuần túy. Ngoài ra, Spring Framework có một số tính năng giúp việc kết hợp các khía cạnh dựa trên chú thích trở nên dễ dàng hơn nhiều cho một nhóm có kinh nghiệm AspectJ hạn chế.
+
+Một cuộc thảo luận đầy đủ về AspectJ nằm ngoài phạm vi của cuốn sách này. Xem [AspectJ], [Colyer] và [Spring] để biết thêm thông tin.
+##  Kiểm thử kiến trúc hệ thống
+Không thể phóng đại sức mạnh của việc phân tách mối quan tâm thông qua các phương pháp tiếp cận theo khía cạnh. Nếu bạn có thể viết logic miền của ứng dụng bằng POJO, được tách biệt khỏi bất kỳ mối quan tâm nào về kiến trúc ở cấp mã, thì bạn có thể thực sự kiểm tra kiến trúc của mình. Bạn có thể phát triển nó từ đơn giản đến phức tạp, nếu cần, bằng cách áp dụng các công nghệ mới theo yêu cầu. Không cần thiết phải thực hiện Big Design Up Front (BDUF). Trên thực tế, BDUF thậm chí còn có hại vì nó ức chế khả năng thích ứng với sự thay đổi, do tâm lý chống đối việc bỏ qua nỗ lực trước đó và do cách lựa chọn kiến trúc ảnh hưởng đến suy nghĩ sau này về thiết kế.
+
+Các kiến trúc sư xây dựng phải thực hiện BDUF vì việc thay đổi kiến trúc triệt để đối với một cấu trúc vật lý lớn là không khả thi khi quá trình xây dựng đang diễn ra tốt đẹp. Mặc dù phần mềm có vật lý riêng của nó, nhưng sẽ khả thi về mặt kinh tế để thực hiện thay đổi triệt để, nếu cấu trúc của phần mềm phân tách các mối quan tâm của nó một cách hiệu quả.
+
+Điều này có nghĩa là chúng tôi có thể bắt đầu một dự án phần mềm với kiến trúc “đơn giản vô cùng” nhưng được phân tách độc đáo, cung cấp các câu chuyện người dùng đang hoạt động một cách nhanh chóng, sau đó bổ sung thêm cơ sở hạ tầng khi chúng tôi mở rộng quy mô. Một số trang Web lớn nhất thế giới đã đạt được tính khả dụng và hiệu suất rất cao, sử dụng bộ nhớ đệm dữ liệu phức tạp, bảo mật, ảo hóa, v.v., tất cả đều được thực hiện một cách hiệu quả và linh hoạt vì các thiết kế kết hợp tối thiểu rất đơn giản ở từng cấp độ trừu tượng và phạm vi.
+
+Tất nhiên, điều này không có nghĩa là chúng ta đi vào một dự án “không có bánh lái”. Chúng tôi có một số kỳ vọng về phạm vi, mục tiêu và lịch trình chung cho dự án, cũng như cấu trúc chung của hệ thống kết quả. Tuy nhiên, chúng ta phải duy trì khả năng thay đổi hướng đi để đáp ứng với các hoàn cảnh đang phát triển.
+
+Kiến trúc EJB ban đầu nhưng là một trong nhiều API nổi tiếng được thiết kế kỹ lưỡng và điều đó làm ảnh hưởng đến sự phân tách các mối quan tâm. Ngay cả những API được thiết kế tốt cũng có thể quá mức cần thiết khi chúng không thực sự cần thiết. Một API tốt phần lớn sẽ biến mất khỏi chế độ xem, vì vậy nhóm dành phần lớn nỗ lực sáng tạo tập trung vào các câu chuyện người dùng đang được triển khai. Nếu không, thì những ràng buộc về kiến trúc sẽ cản trở việc cung cấp hiệu quả giá trị tối ưu cho khách hàng.
+
+Để tóm tắt lại cuộc thảo luận dài này,
+> Một kiến trúc hệ thống tối ưu bao gồm các miền cần quan tâm được mô-đun hóa, mỗi miền được thực hiện với các Plain Old Java (hoặc các đối tượng khác). Các miền khác nhau được tích hợp với nhau bằng các công cụ Aspects hoặc Aspect xâm lấn tối thiểu. Kiến trúc này có thể được kiểm tra theo hướng, giống như mã.
+## Tối ưu hóa việc ra quyết định
+Tính mô-đun hóa và tách biệt các mối quan tâm giúp khả năng quản lý và ra quyết định phi tập trung. Trong một hệ thống đủ lớn, cho dù đó là một thành phố hay một dự án phần mềm, không ai có thể đưa ra tất cả các quyết định.
+
+Tất cả chúng ta đều biết tốt nhất nên giao trách nhiệm cho những người có năng lực nhất. Chúng ta thường quên rằng tốt nhất là nên trì hoãn các quyết định cho đến thời điểm cuối cùng có thể. Đây không phải là lười biếng hay vô trách nhiệm; nó cho phép chúng tôi đưa ra những lựa chọn sáng suốt với thông tin tốt nhất có thể. Một quyết định sớm là một quyết định được đưa ra với kiến thức chưa tối ưu. Chúng tôi sẽ nhận được ít phản hồi của khách hàng hơn, những suy ngẫm về dự án và trải nghiệm với các lựa chọn triển khai của chúng tôi nếu chúng tôi quyết định quá sớm.
+> Sự nhanh nhạy được cung cấp bởi hệ thống POJO với các mối quan tâm được mô-đun hóa cho phép chúng tôi đưa ra quyết định tối ưu, đúng lúc, dựa trên kiến thức gần đây nhất. Sự phức tạp của các quyết định này cũng được giảm bớt.
+## Sử dụng các tiêu chuẩn một cách khôn ngoan, khi chúng thêm giá trị có thể chứng minh
+Việc xây dựng tòa nhà là một điều kỳ diệu để xem vì tốc độ xây dựng các tòa nhà mới (ngay cả trong mùa đông chết chóc) và vì những thiết kế đặc biệt phù hợp với công nghệ ngày nay. Xây dựng là một ngành công nghiệp trưởng thành với các bộ phận, phương pháp và tiêu chuẩn được tối ưu hóa cao, đã phát triển dưới áp lực trong nhiều thế kỷ.
+
+Nhiều nhóm đã sử dụng kiến trúc EJB2 vì nó là một tiêu chuẩn, ngay cả khi thiết kế nhẹ hơn và đơn giản hơn là đủ. Tôi đã thấy các teams bị ám ảnh bởi nhiều tiêu chuẩn được thổi phồng mạnh mẽ và mất tập trung vào việc triển khai giá trị cho khách hàng của họ.
+> Các tiêu chuẩn giúp việc sử dụng lại các ý tưởng và thành phần trở nên dễ dàng hơn, tuyển dụng những người có kinh nghiệm phù hợp, gói gọn các ý tưởng hay và kết nối các thành phần lại với nhau. Tuy nhiên, quá trình tạo ra các tiêu chuẩn đôi khi có thể mất quá nhiều thời gian để ngành công nghiệp phải chờ đợi và một số tiêu chuẩn không phù hợp với nhu cầu thực sự của những người chấp nhận mà chúng dự kiến phục vụ.
+## Hệ thống cần ngôn ngữ dành riêng cho miền
+Xây dựng tòa nhà, giống như hầu hết các lĩnh vực, đã phát triển một ngôn ngữ phong phú với vốn từ vựng, thành ngữ và mẫu truyền tải thông tin cần thiết một cách rõ ràng và ngắn gọn. Trong phần mềm, gần đây đã có sự quan tâm trở lại đến việc tạo ra các Ngôn ngữ dành riêng cho miền (DSL), là các ngôn ngữ kịch bản nhỏ, riêng biệt hoặc API trong các ngôn ngữ tiêu chuẩn cho phép viết mã để nó đọc giống như một dạng văn xuôi có cấu trúc mà một chuyên gia domain có thể viết.
+
+DSL tốt sẽ giảm thiểu “khoảng cách giao tiếp” giữa khái niệm miền và mã triển khai nó, giống như các phương pháp linh hoạt tối ưu hóa thông tin liên lạc trong nhóm và với các bên liên quan của dự án. Nếu bạn đang triển khai logic miền bằng cùng một ngôn ngữ mà chuyên gia miền sử dụng, sẽ có ít rủi ro hơn là bạn sẽ dịch sai miền sang triển khai.
+
+DSL, khi được sử dụng hiệu quả, sẽ nâng cao mức độ trừu tượng lên trên các thành ngữ mã và các mẫu thiết kế. Chúng cho phép nhà phát triển tiết lộ mục đích của mã ở mức độ trừu tượng thích hợp.
+> Ngôn ngữ dành riêng cho miền cho phép tất cả các cấp độ trừu tượng và tất cả các miền trong ứng dụng được thể hiện dưới dạng POJO, từ chính sách cấp cao đến chi tiết cấp thấp.
+## Phần kết luận
+Hệ thống cũng phải sạch. Một kiến trúc xâm lấn lấn át logic miền và ảnh hưởng đến sự nhanh nhẹn. Khi logic miền bị che khuất, chất lượng sẽ bị ảnh hưởng vì lỗi dễ ẩn hơn và các câu chuyện trở nên khó thực hiện hơn. Nếu sự nhanh nhẹn bị ảnh hưởng, năng suất bị ảnh hưởng và lợi ích của TDD bị mất.
+
+Ở tất cả các cấp độ trừu tượng, ý định phải rõ ràng. Điều này sẽ chỉ xảy ra nếu bạn viết POJO và bạn sử dụng các cơ chế giống khía cạnh để kết hợp các mối quan tâm triển khai khác một cách không xâm phạm.
+
+Cho dù bạn đang thiết kế hệ thống hay mô-đun riêng lẻ, đừng bao giờ quên **sử dụng thứ đơn giản nhất có thể hoạt động**.
+## Tham khảo
+**[Alexander]**: Christopher Alexander, A Timeless Way of Building, Oxford University Press, New York, 1979.
+**[AOSD]**: Aspect-Oriented Software Development port, http://aosd.net
+**[ASM]**: ASM Home Page, http://asm.objectweb.org/
+**[AspectJ]**: http://eclipse.org/aspectj
+**[CGLIB]**: Code Generation Library, http://cglib.sourceforge.net/
+**[Colyer]**: Adrian Colyer, Andy Clement, George Hurley, Mathew Webster, Eclipse AspectJ, Person Education, Inc., Upper Saddle River, NJ, 2005.
+**[DSL]**: Domain-specific programming language, http://en.wikipedia.org/wiki/Domain-specific_programming_language
+**[Fowler]**: Inversion of Control Containers and the Dependency Injection pattern, http://martinfowler.com/articles/injection.html
+**[Goetz]**: Brian Goetz, Java Theory and Practice: Decorating with Dynamic Proxies,
+http://www.ibm.com/developerworks/java/library/j-jtp08305.html
+**[Javassist]**: Javassist Home Page, http://www.csg.is.titech.ac.jp/~chiba/javassist/ [JBoss]: JBoss Home Page, http://jboss.org
+**[JMock]**: JMock—A Lightweight Mock Object Library for Java, http://jmock.org
+**[Kolence]**: Kenneth W. Kolence, Software physics and computer performance measure- ments, Proceedings of the ACM annual conference—Volume 2, Boston, Massachusetts, pp. 1024–1040, 1972.
+**[Spring]**: The Spring Framework, http://www.springframework.org 
+**[Mezzaros07]**: XUnit Patterns, Gerard Mezzaros, Addison-Wesley, 2007.
+**[GOF]**: Design Patterns: Elements of Reusable Object Oriented Software, Gamma et al., Addison-Wesley, 1996.
 
 
