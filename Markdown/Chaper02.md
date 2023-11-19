@@ -12,13 +12,13 @@ Những cái tên có ở khắp mọi nơi trong phần mềm. Chúng ta đặt
 
 Tên của biến, hàm, hoặc lớp phải trả lời tất cả những câu hỏi về nó. Nó phải cho bạn biết lý do nó tồn tại, nó làm được những gì, và dùng nó ra sao. Nếu có một comment đi kèm theo tên, thì tên đó không thể hiện được mục đích của nó.
 
-```C
+```java
 int d; // elapsed time in days
 ```
 
 Tên **d** không tiết lộ điều gì cả. Nó không gợi lên cảm giác gì về thời gian, cũng không liên quan gì đến ngày. Chúng ta nên chọn một tên thể hiện được những gì đang được cân đo, và cả đơn vị đo của chúng:
 
-```C
+```java
 int elapsedTimeInDays;
 int daysSinceCreation;
 int daysSinceModification;
@@ -27,7 +27,7 @@ int fileAgeInDays;
 
 Việc chọn tên thể hiện được mục đích có thể làm cho việc hiểu và thay đổi code dễ dàng hơn nhiều. Hãy đoán xem mục đích của đoạn code dưới đây là gì?
 
-```C
+```java
 public List<int[]> getThem() {
     List<int[]> list1 = newArrayList<int[]>();
     for (int[] x : theList)
@@ -50,11 +50,11 @@ Câu trả lời không có trong code, nhưng sẽ có ngay sau đây. Giả s�
 
 Mỗi ô trên màn hình được biểu diễn bằng một sanh sách đơn giản. Chúng tôi cũng thấy rằng chỉ số của số 0 là vị trí biểu diễn giá trị trạng thái (status value), và giá trị 4 nghĩa là trạng thái _được gắn cờ (flagged)._ Chỉ bằng cách đưa ra các khái niệm này, chúng tôi có thể cải thiện mã nguồn một cách đáng kể:
 
-```C
+```java
 public List<int[]> getFlaggedCells() {
     List<int[]> flaggedCells = newArrayList<int[]>();
     for (int[] cell : gameBoard)
-        if (cell[STATUS\_VALUE] == FLAGGED)
+        if (cell[STATUS_VALUE] == FLAGGED)
             flaggedCells.add(cell);
     return flaggedCells;
 }
@@ -64,7 +64,7 @@ Cần lưu ý rằng mức độ đơn giản của code vẫn không thay đổ
 
 Chúng ta có thể đi xa hơn bằng cách viết một lớp đơn giản cho các ô thay vì sử dụng các mảng kiểu int. Nó có thể bao gồm một hàm thể hiện được mục đích (gọi nó là _isFlagged – được gắn cờ_ chẳng hạn) để giấu đi những con số ma thuật _(Từ gốc: magic number – Một khái niệm về các hằng số, tìm hiểu thêm tại_ [https://en.wikipedia.org/wiki/Magic_number_(programming)](https://en.wikipedia.org/wiki/Magic_number_(programming)) _)._
 
-```C
+```java
 public List<Cell> getFlaggedCells() {
     List<Cell> flaggedCells = newArrayList<Cell>();
     for (Cell cell : gameBoard)
@@ -102,9 +102,9 @@ Mặc dù trình biên dịch có thể làm việc với những tên này, nh�
 
 Những tên dạng chuỗi số (a1, a2,… aN) đi ngược lại nguyên tắc đặt tên có mục đích. Mặc dù những tên như vậy không phải là không đúng, nhưng chúng không có thông tin. Chúng không cung cấp manh mối nào về ý định của tác giả. Ví dụ:
 
-```C
+```java
 public static void copyChars(char a1[], char a2[]) {
-    for (int i = 0; i \< a1.length; i++) {
+    for (int i = 0; i < a1.length; i++) {
         a2[i] = a1[i];
     }
 }
@@ -120,7 +120,7 @@ Những từ gây nhiễu là không cần thiết. Từ `variable` sẽ không 
 
 Có một ứng dụng minh họa cho các lỗi trên, chúng tôi đã thay đổi một chút về tên để bảo vệ tác giả. Đây là những thứ chúng tôi thấy trong mã nguồn:
 
-```C
+```java
 getActiveAccount();
 getActiveAccounts();
 getActiveAccountInfo();
@@ -138,7 +138,7 @@ Nếu bạn không thể phát âm nó, thì bạn không thể thảo luận m�
 
 Tôi có biết một công ty dùng tên _genymdhms_ (generation date, year, month, day, hour, minute, and second – phát sinh ngày, tháng, năm, giờ, phút, giây), họ đi xung quanh tôi và "gen why emm dee aich emm ess" (cách phát âm theo tiếng Anh). Tôi có thói quen phát âm như những gì tôi viết, vì vậy tôi bắt đầu nói "gen-yah-muddahims". Sau này nó được gọi bởi một loạt các nhà thiết kế và phân tích, và nghe vẫn có vẻ ngớ ngẫn. Chúng tôi đã từng troll nhau như thế, nó rất thú vị. Nhưng dẫu thế nào đi nữa, chúng tôi đã chấp nhận những cái tên xấu xí. Những lập trình viên mới của công ty tìm hiểu ý nghĩa của các biến, và sau đó họ nói về những từ ngớ ngẫn, thay vì dùng các thuật ngữ tiếng Anh cho thích hợp. Hãy so sánh:
 
-```C
+```java
 class DtaRcrd102 {
     privateDate genymdhms;
     privateDate modymdhms;
@@ -149,7 +149,7 @@ class DtaRcrd102 {
 
 và
 
-```C
+```java
 class Customer {
     privateDate generationTimestamp;
     privateDate modificationTimestamp;
@@ -170,7 +170,7 @@ Tương tự như vậy, tên e là một sự lựa chọn tồi tệ cho bất
 
 Sở thích cá nhân của tôi là chỉ đặt tên ngắn cho những biến cục bộ bên trong những phương thức ngắn. _Độ dài của tên phải tương ứng với phạm vi hoạt động của nó_. Nếu một biến hoặc hằng số được nhìn thấy và sử dụng ở nhiều vị trí trong phần thân của mã nguồn, bắt buộc phải đặt cho nó một tên dễ tìm kiếm. Ví dụ:
 
-```C
+```java
 for (int j=0; j<34; j++) {
     s += (t[j]*4)/5;
 }
@@ -178,7 +178,7 @@ for (int j=0; j<34; j++) {
 
 và
 
-```C
+```java
 int realDaysPerIdealDay = 4;
 constint WORK_DAYS_PER_WEEK = 5;
 int sum = 0;
@@ -205,7 +205,7 @@ Trong các ngôn ngữ hiện đại, chúng ta có nhiều kiểu dữ liệu m
 
 Các lập trình viên Java thì không cần mã hóa. Các kiểu dữ liệu mặc định là đủ mạnh mẽ, và các công cụ sửa lỗi đã được nâng cấp để chúng có thể phát hiện các vấn đề về dữ liệu trước khi được biên dịch. Vậy nên, hiện nay KH và các dạng mã hóa khác chỉ đơn giản là một loại chướng ngại vật. Chúng làm cho việc đổi tên biến, tên hàm, tên lớp (hoặc kiểu dữ liệu của chúng) trở nên khó khăn hơn. Chúng làm cho code khó đọc, và tạo ra một hệ thống mã hóa có khả năng đánh lừa người đọc:
 
-```C
+```java
 PhoneNumber phoneString;
     // name not changed when type changed!
 ```
@@ -214,7 +214,7 @@ PhoneNumber phoneString;
 
 Bạn cũng không cần phải thêm các tiền tố như m\_ vào biến thành viên (member variable) nữa. Các lớp và các hàm phải đủ nhỏ để bạn không cần chúng. Và bạn nên sử dùng các công cụ chỉnh sửa giúp làm nổi bật các biến này, làm cho chúng trở nên khác biệt với phần còn lại.
 
-```C
+```java
 publicclass Part {
     privateString m_dsc; // The textual description
     void setName(String name) {
@@ -256,7 +256,7 @@ Tên lớp và các đối tượng nên sử dụng danh từ hoặc cụm danh
 
 Tên các phương thức nên có động từ hoặc cụm động từ như `postPayment`, `deletePage`, hoặc `save`. Các phương thức truy cập, chỉnh sửa thuộc tính phải được đặt tên cùng với `get`, `set` và `is` theo tiêu chuẩn của Javabean.
 
-```C
+```java
 string name = employee.getName();
 customer.setName("mike");
 if (paycheck.isPosted())...
@@ -264,13 +264,13 @@ if (paycheck.isPosted())...
 
 Khi các hàm khởi tạo bị nạp chồng, sử dụng các phương thức tĩnh có tên thể hiện được đối số sẽ tốt hơn. Ví dụ:
 
-```C
+```java
 Complex fulcrumPoint = Complex.FromRealNumber(23.0);
 ```
 
 sẽ tốt hơn câu lệnh
 
-```C
+```java
 Complex fulcrumPoint = new Complex(23.0);
 ```
 
