@@ -70,7 +70,7 @@ throws Exception {
 }
 ```
 
-Bạn có hiểu hàm trên sau ba phút đọc không? Chắc chắn là không. Có quá nhiều thứ xảy ra với nhiều mức độ trừu tượng khác nhau. Các chuỗi kỳ lạ, các lời gọi hàm trộn lẫn cùng các câu lệnh if lồng nhau,…
+Bạn có hiểu hàm trên sau ba phút đọc không? Chắc chắn là không. Có quá nhiều thứ xảy ra với nhiều mức độ trừu tượng khác nhau. Các chuỗi kỳ lạ, các lời gọi hàm trộn lẫn cùng các câu lệnh if lồng nhau,...
 
 Tuy nhiên, chỉ với một vài phép rút gọn đơn giản, đặt lại vài cái tên, và một chút tái cơ cấu lại hàm, tôi đã có thể nắm bắt được mục đích của hàm này trong chín dòng lệnh. Thử sức lại với nó trong ba phút tiếp theo nào:
 
@@ -102,7 +102,7 @@ Nguyên tắc đầu tiên của hàm là chúng phải nhỏ. Nguyên tắc th�
 
 Vào những năm 80, chúng tôi cho rằng một hàm không nên lớn hơn một màn hình. Dĩ nhiên, chúng tôi nói điều đó khi các màn hình VT100 chỉ có 24 dòng cùng 80 cột, và 4 dòng đầu thì được dùng cho mục đích quản trị. Ngày nay, với một phông chữ thích hợp và một màn hình xịn, bạn có thể phủ đến 150 ký tự cho 100 dòng hoặc nhiều hơn trên một màn hình. Các dòng code không nên dài quá 150 ký tự. Các hàm không nên "chạm nóc" 100 dòng, và độ dài thích hợp nhất dành cho hàm là không quá 20 dòng lệnh.
 
-Vậy thu gọn một hàm bằng cách nào? Năm 1999 tôi có đến thăm Kent Beck tại nhà của ông ở Oregon. Chúng tôi ngồi xuống và cùng nhau viết một số chương trình nhỏ. Ông ấy đã cho tôi xem một chương trình nhỏ được viết bằng Java/Swing mà ông ấy gọi là Sparkle (Tia Sáng). Nó tạo ra một hiệu ứng hình ảnh trên màn hình rất giống với cây đũa thần của các bà tiên đỡ đầu. Khi bạn di chuyển chuột, các tia sáng lấp lánh sẽ "nhỏ giọt" từ con trỏ chuột xuống đáy cửa sổ, cứ như bị lực hấp dẫn kéo xuống vậy. Khi Kent cho tôi xem mã nguồn, tôi đã bị ấn tượng bởi độ nhỏ gọn của các hàm […]. Mọi hàm trong chương trình này chỉ dài hai, ba hoặc bốn dòng. Mỗi hàm đều rõ ràng. Mỗi hàm kể một câu chuyện. Và mỗi hàm dẫn bạn đến hàm tiếp theo hấp dẫn hơn. Đó là cách hàm của bạn trở nên ngắn gọn.
+Vậy thu gọn một hàm bằng cách nào? Năm 1999 tôi có đến thăm Kent Beck tại nhà của ông ở Oregon. Chúng tôi ngồi xuống và cùng nhau viết một số chương trình nhỏ. Ông ấy đã cho tôi xem một chương trình nhỏ được viết bằng Java/Swing mà ông ấy gọi là Sparkle (Tia Sáng). Nó tạo ra một hiệu ứng hình ảnh trên màn hình rất giống với cây đũa thần của các bà tiên đỡ đầu. Khi bạn di chuyển chuột, các tia sáng lấp lánh sẽ "nhỏ giọt" từ con trỏ chuột xuống đáy cửa sổ, cứ như bị lực hấp dẫn kéo xuống vậy. Khi Kent cho tôi xem mã nguồn, tôi đã bị ấn tượng bởi độ nhỏ gọn của các hàm [...]. Mọi hàm trong chương trình này chỉ dài hai, ba hoặc bốn dòng. Mỗi hàm đều rõ ràng. Mỗi hàm kể một câu chuyện. Và mỗi hàm dẫn bạn đến hàm tiếp theo hấp dẫn hơn. Đó là cách hàm của bạn trở nên ngắn gọn.
 
 Hàm của bạn sẽ ngắn như thế nào? Chúng thường phải ngắn hơn Listing 3-2! Thật vậy, Listing 3-2 thực sự nên được rút gọn thành Listing 3-3.
 
@@ -138,7 +138,7 @@ Vấn đề là, chúng ta khó biết "một việc" ở đây là việc gì. 
 2. Nếu phải, nạp vào các cài đặt và tái thiết lập nó
 3. Hiển thị trang bằng HTML
 
-Vậy, cái gì đây? Hàm đang thực hiện một việc hay ba việc? […] Chúng ta có thể mô tả hàm bằng cách xem nó như một đoạn TO ngắn (Ngôn ngữ LOGO sử dụng từ khóa TO giống như cách Ruby và Python sử dụng def. Vì vậy, mọi hàm đều bắt đầu bằng từ TO. Điều này tạo nên một hiệu ứng thú vị trên các hàm được thiết kế):
+Vậy, cái gì đây? Hàm đang thực hiện một việc hay ba việc? [...] Chúng ta có thể mô tả hàm bằng cách xem nó như một đoạn TO ngắn (Ngôn ngữ LOGO sử dụng từ khóa TO giống như cách Ruby và Python sử dụng def. Vì vậy, mọi hàm đều bắt đầu bằng từ TO. Điều này tạo nên một hiệu ứng thú vị trên các hàm được thiết kế):
 
 TO RenderPageWithSetupsAndTeardowns (ĐỂ hiển thị trang với các cài đặt và tái nạp), chúng tôi kiểm tra xem trang có phải là trang thử nghiệm hay không và nếu có, chúng tôi sẽ đưa vào các cài đặt và tái thiết lập nó. Sau đó, chúng tôi sẽ hiển thị trang bằng HTML.
 
@@ -148,13 +148,13 @@ Rõ ràng là Listing 3-1 gồm nhiều chức năng với nhiều mức độ k
 
 Vì vậy, một cách khác để biết hàm đang làm nhiều hơn "một việc" là khi bạn có thể trích xuất một hàm khác từ nó, nhưng với một cái tên khác so với chức năng của nó ở trong hàm.
 
-[…]
+[...]
 
 ## Mỗi hàm là một cấp độ trừu tượng
 
 Để đảm bảo các hàm của chúng ta đang thực hiện "một việc", chúng ta cần chắc chắn rằng các câu lệnh trong hàm của chúng ta đều ở cùng cấp độ trừu tượng. Hãy xem cách Listing 3-1 vi phạm quy tắc này. Có những khái niệm trong đó có mức trừu tượng rất cao, chẳng hạn như `getHtml();` những thứ khác ở mức trừu tượng trung gian, chẳng hạn như: `String pagePathName = PathParser.render (pagePath)` và những người khác có mức độ thấp đáng kể, chẳng hạn như: `.append("\n")`.
 
-Việc trộn lẫn các cấp độ trừu tượng với nhau trong một hàm sẽ luôn gây ra những hiểu lầm cho người đọc. […]
+Việc trộn lẫn các cấp độ trừu tượng với nhau trong một hàm sẽ luôn gây ra những hiểu lầm cho người đọc. [...]
 
 ### Đọc code từ trên xuống dưới: Nguyên tắc Stepdown
 
@@ -174,7 +174,7 @@ _To search the parent. . ._
 
 Sự thật là rất khó để các lập trình viên học cách tuân theo nguyên tắc này và viết các hàm ở một mức độ trừu tượng duy nhất. Nhưng học thủ thuật này cũng rất quan trọng. Nó là chìa khóa để đảm bảo các hàm ngắn gọn và giữ cho các chúng làm "một việc". Làm cho code của bạn đọc như một đoạn văn là kỹ thuật hiệu quả để duy trì sự đồng nhất của các cấp trừu tượng.
 
-[…]
+[...]
 
 ## Câu lệnh switch
 
@@ -260,7 +260,7 @@ Trong Listing 3-7, tôi đã thay đổi tên hàm ví dụ từ `testableHtml` 
 
 Chọn một cái tên có tính mô tả tốt sẽ giúp bạn vẽ lại thiết kế của mô-đun đó vào não, và việc cải thiện nó sẽ đơn giản hơn. Nhưng điều đó không có nghĩa là bạn sẽ bất chấp tất cả để "săn" được một cái tên tốt hơn để thay thế tên hiện tại.
 
-[…]
+[...]
 
 ## Đối số của hàm
 
@@ -300,7 +300,7 @@ Những hàm dyadic không phải là những con quỷ dữ, và chắc chắn 
 
 Hàm có ba đối số khó hiểu hơn nhiều so với hàm hai đối số. Các vấn đề về sắp xếp, tạm ngừng và bỏ qua tăng gấp đôi. Tôi đề nghị bạn cẩn thận trước khi tạo ra nó.
 
-[…]
+[...]
 
 ### Đối số đối tượng
 
@@ -367,7 +367,7 @@ Tác dụng phụ này tạo ra một mắt xích về thời gian. Đó là, `c
 
 ### Đối số đầu ra
 
-[…]
+[...]
 
 Nói chung chúng ta nên tránh các đối số đầu ra. Nếu hàm của bạn phải thay đổi trạng thái của một cái gì đó, hãy thay đổi trạng thái của đối tượng sở hữu nó.
 
@@ -387,7 +387,7 @@ if (set("username", "unclebob"))...
 
 Hãy tưởng tượng điều này từ quan điểm của người đọc. Nó có nghĩa là gì? Nó hỏi thuộc tính "`username`" đã được đặt thành "`unclebob`" chưa? Hay nó hỏi thuộc tính "`username`" trước đó có giá trị là "`unclebob`"? Thật khó để suy ra ý nghĩa của hàm vì không rõ từ "set" là động từ hay tính từ.
 
-Dự định của tác giả là đặt set trở thành một động từ, nhưng trong ngữ cảnh của câu lệnh `if`, nó mang đến cảm giác như một tính từ […]. Chúng tôi thử giải quyết vấn đề này bằng cách đổi tên hàm đã đặt thành `setAndCheckIfExists`, nhưng điều đó không giúp ích gì nhiều trong ngữ cảnh của câu lệnh if. Giải pháp thực sự là tách lệnh khỏi truy vấn sao cho sự nhầm lẫn không thể xảy ra.
+Dự định của tác giả là đặt set trở thành một động từ, nhưng trong ngữ cảnh của câu lệnh `if`, nó mang đến cảm giác như một tính từ [...]. Chúng tôi thử giải quyết vấn đề này bằng cách đổi tên hàm đã đặt thành `setAndCheckIfExists`, nhưng điều đó không giúp ích gì nhiều trong ngữ cảnh của câu lệnh if. Giải pháp thực sự là tách lệnh khỏi truy vấn sao cho sự nhầm lẫn không thể xảy ra.
 
 ```java
 if (attributeExists("username")) {
@@ -430,7 +430,7 @@ Cuối cùng, các hàm tôi hoàn thành đã tuân theo các nguyên tắc tô
 
 ## Kết luận
 
-Mỗi hệ thống được xây dựng từ một DSL được thiết kế và mô tả bởi các lập trình viên. Các hàm là một động từ, và các lớp là một danh từ […]. Nghệ thuật lập trình, dĩ nhiên, luôn là nghệ thuật sử dụng ngôn ngữ.
+Mỗi hệ thống được xây dựng từ một DSL được thiết kế và mô tả bởi các lập trình viên. Các hàm là một động từ, và các lớp là một danh từ [...]. Nghệ thuật lập trình, dĩ nhiên, luôn là nghệ thuật sử dụng ngôn ngữ.
 
 Các lập trình viên tài năng xem các hệ thống như những câu chuyện kể, chứ không phải là các chương trình được viết. Họ sử dụng khả năng của ngôn ngữ lập trình mà họ chọn để diễn đạt _câu chuyện_ phong phú hơn và giàu cảm xúc hơn. Một phần của các DSL là cấu trúc phân cấp của các hàm mô tả hành động diễn ra trong hệ thống đó. Và các hàm được định nghĩa để nói lên câu chuyện của riêng mình.
 
