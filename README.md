@@ -1,6 +1,7 @@
-# Clean Code Tiếng Việt
+# Sách Clean Code (Tiếng Việt)
 
-## Phần 7 - 11 có ở đây: https://github.com/chukimmuoi/Clean-Code---Tieng-Viet
+Chương 01 ~ 06: [quoctinnguyen8](https://github.com/quoctinnguyen8/Clean-Code---Tieng-Viet)  
+Chương 07 ~ 11: [chukimmuoi](https://github.com/chukimmuoi/Clean-Code---Tieng-Viet)
 
 Vui lòng ghi nguồn nếu bạn sử dụng lại bản dịch của mình cho blog của bạn
 
