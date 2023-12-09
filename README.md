@@ -10,3 +10,21 @@ Bản dịch này hoàn toàn vì cộng đồng, tác giả không chịu trác
 ### Update tháng 09/2023
 
 Repo này đạt 300 sao thì mình sẽ dịch bổ sung các chap còn thiếu & chỉnh sửa lại bản dịch hiện tại cho dễ đọc hơn. Việt Nam nói là nàm!
+
+### Update tháng 12/2023
+
+Repo đã đạt 300 sao (2023/12/09), kế hoạch phát triển tiếp đã được bắt đầu :>
+
+#### Ủng hộ
+
+Do khá bận với công việc cá nhân nên mình ít có thời gian phát triển repo này, các bạn có thể vả xèn vào mặt mình theo thông tin bên dưới để đẩy nhanh tiến độ =)))
+
+Thông tin donate:
+
+```
+STK: 0394 1833 201
+
+Ngân hàng: TPBank
+
+Chủ tài khoản: NGUYỄN QUỐC TÍN
+```
