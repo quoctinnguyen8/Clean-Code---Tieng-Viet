@@ -99,7 +99,7 @@ img {
     display: block;
 }
 .pagination select {
-    background: url(../image/select-mobile.png) no-repeat right #f0f0f0;
+    background: url(../../image/select-mobile.png) no-repeat right #f0f0f0;
     padding: 0 10px;
     height: 34px;
     width: 130px;
