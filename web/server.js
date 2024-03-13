@@ -53,11 +53,11 @@ $(document).ready(function () {
 	listFile.forEach(function (file, index) {
 		if(urlParams.get('chapter') == index + 1 ){
 			var chapterTemplate = `
-				<option selected value="/index.html?chapter=${(getNumber(index + 1))}">Chương ${index + 1}</option>`;	
+				<option selected value="/index.html?chapter=${(getNumber(index + 1))}">${file.title}</option>`;	
 		}
 		else{
 			var chapterTemplate = `
-				<option value="/index.html?chapter=${(getNumber(index + 1))}">Chương ${index + 1}</option>`;
+				<option value="/index.html?chapter=${(getNumber(index + 1))}">${file.title}</option>`;
 		}
 		$('.pagination select').append(chapterTemplate);
 	

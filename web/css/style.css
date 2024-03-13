@@ -1,17 +1,27 @@
 /* Option 2: Import via CSS */
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
 
-*{
+* {
     margin: 0px;
     padding: 0px;
 }
-a:link{
+
+a:link {
     text-decoration: none;
 }
-ul li{
+a{
+    word-wrap: break-word;
+}
+p{
+    word-wrap: break-word;
+}
+ul li {
     list-style-type: none;
 }
-
+.hr{
+    margin: 25px 0;
+    border: 1px solid #f0f0f0;
+}
 
 .pagination li {
     position: relative
@@ -24,12 +34,9 @@ ul li{
     left: 0
 }
 
-.pagination .next{
-    opacity: .5;
-    transition: all .5s
-}
-
-.pagination .next:active,.pagination .next:focus,.pagination .next:hover {
+.pagination .next:active,
+.pagination .next:focus,
+.pagination .next:hover {
     opacity: 1
 }
 
@@ -38,7 +45,13 @@ ul li{
     padding-top: 25px;
     text-align: center;
     justify-content: center;
+}
 
+.pagination ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .pagination li {
@@ -48,49 +61,35 @@ ul li{
     height: 30px;
     font-weight: 400;
     margin: 0 2px;
-    background-color: #f0f0f0;
+    background-color: #fff;
     border-radius: 4px;
     cursor: pointer;
     border: 1px solid transparent;
     transition: all .5s
 }
 
-.pagination li a {
-    color: #888;
-    font-size: 14px;
-    line-height: 32px;
-    transition: all .5s
-}
-
-.pagination li.active,.pagination li:hover {
+.pagination li.active,
+.pagination li:hover {
     background-color: #fff;
     border-color: #007f61;
 }
 
-.pagination li.next{
+.pagination li.next {
     position: relative;
-    background-color: #007f61
+    font-size: 20px;
+    text-align: center;
+    color: #007f61;
+    background-color: #fff
 }
 
-.pagination li.next:before{
+.pagination li.next:before {
     display: inline-block;
     vertical-align: middle;
     font-family: sst;
-    font-size: 20px;
     line-height: 32px;
     margin-top: -2px;
     font-weight: 100;
-    color: #fff
-}
-
-.pagination li.next a {
-    display: inline-block;
-    vertical-align: middle;
-    width: 32px;
-    height: 32px;
-    z-index: 9999;
-    top: 0;
-    left: 0
+    color: #007f61;
 }
 
 
@@ -98,44 +97,60 @@ img {
     max-width: 80%;
     display: block;
 }
+
 .pagination select {
-    background: url(../../image/select-mobile.png) no-repeat right #f0f0f0;
     padding: 0 10px;
     height: 34px;
-    width: 130px;
+    width: 70%;
     border: none;
     text-align: start;
     -webkit-appearance: none;
     border-radius: 5px;
-    
+
 }
+
 .sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
+    position: fixed;
+    top: 0;
+    width: 100%;
 }
+
 .header {
     padding: 10px 16px;
-    background: gainsboro;
+    background: #007f61;
     color: #f1f1f1;
     border-radius: 0px 0px 5px 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-div#btn-fs{ 
+
+div#btn-fs {
     position: fixed;
     display: flex;
     bottom: 40px;
     right: 10px;
     width: 90px;
     justify-content: space-between;
+    color: #fff;
     border: none;
 }
-@media  (min-width: 600px)  and (max-width: 768px) {
+div#btn-fs button{
+    position: relative;
+    background-color: #007f61;
+}
+
+.btn-dash, .btn-plus{
+    color: #fff;
+    opacity: .5;
+    transition: all .5s;
+}
+
+@media (min-width: 600px) and (max-width: 768px) {
     .sticky {
         position: fixed;
         top: 0;
     }
-    div#btn-fs{
+
+    div#btn-fs {
         position: fixed;
         display: flex;
         bottom: 40px;
@@ -143,7 +158,8 @@ div#btn-fs{
         justify-content: space-between;
         border: none;
     }
-    div#btn-fs button{
+
+    div#btn-fs button {
         width: 10px;
         height: 10px;
         opacity: 0.5;
@@ -153,7 +169,7 @@ div#btn-fs{
     }
 }
 
-div#btn-fs button{
+div#btn-fs button {
     width: 40px;
     height: 40px;
     opacity: 0.5;
@@ -161,13 +177,31 @@ div#btn-fs button{
     border-radius: 5px;
     align-items: center;
 }
-div#btn-fs button:hover{
+
+div#btn-fs button:hover {
     opacity: 1;
 }
-.bool-list{
+.section-footer p {
+    font-size: 14px;
+    color: #007f61;
+    letter-spacing: 0;
+    font-weight: 700;
+    margin: 0 0 20px;
+}
+.fbt {
+    font-size: 14px;
+    color: #111;
+    letter-spacing: 0;
+    line-height: 24px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    font-family: Roboto, sans-serif !important;
+}
+.bool-list {
     font-size: 16px;
 }
-#content{
+
+#content {
     font-size: 1rem;
     width: 100%;
 }
