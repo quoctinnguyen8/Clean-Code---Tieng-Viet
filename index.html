@@ -60,17 +60,9 @@
 	</body>
 	<script>
 		const FONT_SIZE_NAME = 'fontSize';
-		var sticky = header.offsetTop;
 		let fontSize = localStorage.getItem(FONT_SIZE_NAME) === null ? 16 : localStorage.getItem(FONT_SIZE_NAME);
 		const txt = document.getElementById('content');
 		txt.style.fontSize = fontSize + 'px';
-		function headerFixed() {
-			if (window.pageYOffset > sticky) {
-				header.classList.add("sticky");
-			} else {
-				header.classList.remove("sticky");
-			}
-		}
 		function plusFs5px() {
 			fontSize + 5 > 40 ? fontSize = 40 : fontSize += 5;
 			txt.style.fontSize = fontSize + 'px';

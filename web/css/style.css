@@ -165,6 +165,15 @@ div#btn-fs button{
         border-radius: 5px;
         align-items: center;
     }
+
+    .section-footer{
+        text-align: center;
+    }
+}
+@media (max-width: 600px) {
+    .section-footer{
+        text-align: center;
+    }
 }
 
 div#btn-fs button {
@@ -196,6 +205,7 @@ div#btn-fs button:hover {
     font-family: Roboto, sans-serif !important;
 }
 .bool-list {
+    margin-top: 80px;
     font-size: 16px;
 }
 
