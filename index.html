@@ -24,6 +24,9 @@
 				<li id="btn-next" class="next" data-btn="next">+</li>
 			</ul>
 		</div>
+		<div id="header-moile" class="" style="display: none;">
+
+		</div>
 
 		<div class="bool-list mb-3" id="content" style="background-color: rgb(244, 244, 244);">
 			<div class="container">
@@ -47,7 +50,7 @@
 						<span class="fbt">Thông tin donet</span>
 					</div>
 					<div class="col-xs-12 col-md-5">
-						<p class="">STK: 0394 1833 201</p>
+						<p>STK: 0394 1833 201</p>
 						<p>Ngân hàng: TPBank</p>
 						<p>Chủ tài khoản: NGUYỄN QUỐC TÍN</p>
 					</div>
@@ -57,8 +60,6 @@
 	</body>
 	<script>
 		const FONT_SIZE_NAME = 'fontSize';
-		window.onscroll = function () { headerFixed() };
-		var header = document.getElementById("myHeader");
 		var sticky = header.offsetTop;
 		let fontSize = localStorage.getItem(FONT_SIZE_NAME) === null ? 16 : localStorage.getItem(FONT_SIZE_NAME);
 		const txt = document.getElementById('content');
