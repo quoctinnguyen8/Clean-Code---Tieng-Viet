@@ -4,21 +4,37 @@
 * {
     margin: 0px;
     padding: 0px;
+    overflow-x: hidden  ;
 }
 
 a:link {
     text-decoration: none;
 }
-a{
+
+a {
+    word-wrap: break-word;
+    text-decoration: none;
+}
+strong{
     word-wrap: break-word;
 }
-p{
+th{
+    max-width: 100%;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-x: hidden;
+
+}
+
+p {
     word-wrap: break-word;
 }
+
 ul li {
     list-style-type: none;
 }
-.hr{
+
+.hr {
     margin: 25px 0;
     border: 1px solid #f0f0f0;
 }
@@ -42,7 +58,6 @@ ul li {
 
 
 .pagination {
-    padding-top: 25px;
     text-align: center;
     justify-content: center;
 }
@@ -79,7 +94,8 @@ ul li {
     font-size: 20px;
     text-align: center;
     color: #007f61;
-    background-color: #fff
+    background-color: #fff;
+    overflow: hidden;
 }
 
 .pagination li.next:before {
@@ -106,7 +122,10 @@ img {
     text-align: start;
     -webkit-appearance: none;
     border-radius: 5px;
+}
 
+.pagination select::before {
+    width: 70%;
 }
 
 .header {
@@ -120,7 +139,9 @@ img {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     width: 100%;
 }
-
+.nav-cus{
+    justify-content: center;
+}
 div#btn-fs {
     position: fixed;
     display: flex;
@@ -131,23 +152,20 @@ div#btn-fs {
     color: #fff;
     border: none;
 }
-div#btn-fs button{
+
+div#btn-fs button {
     position: relative;
     background-color: #007f61;
 }
 
-.btn-dash, .btn-plus{
+.btn-dash,
+.btn-plus {
     color: #fff;
     opacity: .5;
     transition: all .5s;
 }
 
 @media (min-width: 600px) and (max-width: 768px) {
-    .sticky {
-        position: fixed;
-        top: 0;
-    }
-
     div#btn-fs {
         position: fixed;
         display: flex;
@@ -165,13 +183,14 @@ div#btn-fs button{
         border-radius: 5px;
         align-items: center;
     }
-
-    .section-footer{
-        text-align: center;
-    }
 }
+
+.section-footer {
+    text-align: center;
+}
+
 @media (max-width: 600px) {
-    .section-footer{
+    .section-footer {
         text-align: center;
     }
 }
@@ -188,13 +207,8 @@ div#btn-fs button {
 div#btn-fs button:hover {
     opacity: 1;
 }
-.section-footer p {
-    font-size: 14px;
-    color: #007f61;
-    letter-spacing: 0;
-    font-weight: 700;
-    margin: 0 0 20px;
-}
+
+
 .fbt {
     font-size: 14px;
     color: #111;
@@ -204,8 +218,9 @@ div#btn-fs button:hover {
     margin: 0 0 20px;
     font-family: Roboto, sans-serif !important;
 }
+
 .bool-list {
-    margin-top: 80px;
+    margin-top: 70px;
     font-size: 16px;
 }
 

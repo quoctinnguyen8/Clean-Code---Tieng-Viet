@@ -47,25 +47,33 @@ $(document).ready(function () {
 	const getNumber = (number) => {
 		return number < 10 ? '0' + number : number;
 	}
-
 	const urlParams = new URLSearchParams(window.location.search);
 	// list folder in select - option
 	listFile.forEach(function (file, index) {
-		if(urlParams.get('chapter') == index + 1 ){
+		if (urlParams.get('chapter') == index + 1) {
 			var chapterTemplate = `
-				<option selected value="/index.html?chapter=${(getNumber(index + 1))}">${file.title}</option>`;	
+				<option selected value="/chapter.html?chapter=${(getNumber(index + 1))}">${file.title}</option>`;
 		}
-		else{
+		else {
 			var chapterTemplate = `
-				<option value="/index.html?chapter=${(getNumber(index + 1))}">${file.title}</option>`;
+				<option value="/chapter.html?chapter=${(getNumber(index + 1))}">${file.title}</option>`;
 		}
-		$('.pagination select').append(chapterTemplate);
-	
+		var listChaper = `<div class="col-md-6 mt-2">
+							<ul>
+								<li><a href="/chapter.html?chapter=${(getNumber(index + 1))}">${file.title}</a></li>
+							</ul>
+						</div>`
+		$('.table-of-contents').append(listChaper);
+		$('select').append(chapterTemplate);
+
 	});
+
+
 	let chapter = urlParams.get('chapter');
-	if ((chapter > listFile.length || chapter === null || chapter < 1)) {
-		window.location.href = '/index.html?chapter=01';
-	}	
+	// if ((chapter > listFile.length || chapter < 1)) {
+	// 	window.location.href = '/chapter.html?chapter=01';
+	// }
+
 	$("#info_chapter option")
 	var urlChapter = listFile[parseInt(chapter - 1)].link;
 	document.title = listFile[parseInt(chapter - 1)].title;
@@ -91,7 +99,8 @@ $(document).ready(function () {
 		} else {
 			chapter--;
 		}
-		window.location.href = `/index.html?chapter=${getNumber(parseInt(chapter))}`;
+
+		window.location.href = `/chapter.html?chapter=${getNumber(parseInt(chapter))}`;
 	});
 
 
