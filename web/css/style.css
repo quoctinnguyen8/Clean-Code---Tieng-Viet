@@ -1,0 +1,231 @@
+/* Option 2: Import via CSS */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+
+* {
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden  ;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a {
+    word-wrap: break-word;
+    text-decoration: none;
+}
+
+strong{
+    word-wrap: break-word;
+}
+th{
+    max-width: 100%;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-x: hidden;
+
+}
+
+p {
+    word-wrap: break-word;
+}
+
+ul li {
+    list-style-type: none;
+}
+
+.hr {
+    margin: 25px 0;
+    border: 1px solid #f0f0f0;
+}
+
+.pagination li {
+    position: relative
+}
+
+.pagination li a {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0
+}
+
+.pagination .next:active,
+.pagination .next:focus,
+.pagination .next:hover {
+    opacity: 1
+}
+
+
+.pagination {
+    text-align: center;
+    justify-content: center;
+}
+
+.pagination ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination li {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    font-weight: 400;
+    margin: 0 2px;
+    background-color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .5s
+}
+
+.pagination li.active,
+.pagination li:hover {
+    background-color: #fff;
+    border-color: #007f61;
+}
+
+.pagination li.next {
+    position: relative;
+    font-size: 20px;
+    text-align: center;
+    color: #007f61;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.pagination li.next:before {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: sst;
+    line-height: 32px;
+    margin-top: -2px;
+    font-weight: 100;
+    color: #007f61;
+}
+
+
+img {
+    max-width: 80%;
+    display: block;
+}
+
+.pagination select {
+    padding: 0 10px;
+    height: 34px;
+    width: 70%;
+    border: none;
+    text-align: start;
+    -webkit-appearance: none;
+    border-radius: 5px;
+}
+
+.pagination select::before {
+    width: 70%;
+}
+
+.header {
+    top: 0px;
+    overflow: hidden;
+    position: fixed;
+    padding: 10px 16px;
+    background: #007f61;
+    color: #f1f1f1;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 100%;
+}
+.nav-cus{
+    justify-content: center;
+}
+div#btn-fs {
+    position: fixed;
+    display: flex;
+    bottom: 40px;
+    right: 10px;
+    width: 90px;
+    justify-content: space-between;
+    color: #fff;
+    border: none;
+}
+
+div#btn-fs button {
+    position: relative;
+    background-color: #007f61;
+}
+
+.btn-dash,
+.btn-plus {
+    color: #fff;
+    opacity: .5;
+    transition: all .5s;
+}
+
+@media (min-width: 600px) and (max-width: 768px) {
+    div#btn-fs {
+        position: fixed;
+        display: flex;
+        bottom: 40px;
+        right: 0px;
+        justify-content: space-between;
+        border: none;
+    }
+
+    div#btn-fs button {
+        width: 10px;
+        height: 10px;
+        opacity: 0.5;
+        transition: all .5s;
+        border-radius: 5px;
+        align-items: center;
+    }
+}
+
+.section-footer {
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .section-footer {
+        text-align: center;
+    }
+}
+
+div#btn-fs button {
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+    transition: all .5s;
+    border-radius: 5px;
+    align-items: center;
+}
+
+div#btn-fs button:hover {
+    opacity: 1;
+}
+
+
+.fbt {
+    font-size: 14px;
+    color: #111;
+    letter-spacing: 0;
+    line-height: 24px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    font-family: Roboto, sans-serif !important;
+}
+
+.bool-list {
+    margin-top: 70px;
+    font-size: 16px;
+}
+
+#content {
+    font-size: 1rem;
+    width: 100%;
+}

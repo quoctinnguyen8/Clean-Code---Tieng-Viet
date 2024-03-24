@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Code</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="./web/server.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            background-color: white;
+            font-family: Roboto, sans-serif;
+            font-weight: 500;
+        }
+        img{
+            
+        }
+        a{
+            text-decoration: none;
+        }
+        .book-cover img {
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .book-details h1, h2 {
+            font-size: 24px;
+            line-height: 1.3;
+            color: #000;
+            font-weight: 500;
+            transition: all .5s;
+        }
+        .book-details p, .description {
+            font-size: 1.1rem;
+            color: #343a40;
+        }
+
+        .book-details p span{
+            font-weight: 500;
+            
+        }
+        .table-of-contents h2 {
+            font-size: 1.5rem;
+            color: #343a40;
+        }
+        .table-of-contents ul {
+            padding-left: 20px;
+            
+        }
+
+        .table-of-contents li a {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #000;
+            transition: all .5s;
+
+        }
+        .table-of-contents li{
+            list-style-type: none;
+        }
+        .table-of-contents li a:hover{
+            color: #007f61;
+        }
+        @media (max-width: 768px){
+            .book-details div{
+                display: block;
+            }
+            .book-details{
+                margin-top: 20px
+            }
+         }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-4 book-cover">
+                <img src="./image/cover_img.png" alt="Book Cover" class="img-fluid">
+            </div>
+            <div class="col-md-8 book-details">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h1 class="mb-4">Clean Code</h1>
+                        <p class="mb-4">Tác giả: <span>Robert Martin </span></p>
+                        <p class="mb-4">Người dịch: <span>Nguyễn Quốc Tín</span></p>
+                        <p class="mb-4">&nbsp;</p>
+                    </div>
+                    <div>
+                        <h2 class="mb-4">Thông tin donet</h2>
+                        <p class="mb-4">STK: <span>0394 1833 201</span></p>
+                        <p class="mb-4">Ngân hàng: <span>TPBank</span></p>
+                        <p class="mb-4">Chủ tài khoản: <span>NGUYỄN QUỐC TÍN</span></p>
+                    </div>
+                </div>
+                <p class="description">Mô tả: cuốn sách viết bởi Robert C. Martin,
+                    một chuyên gia trong lĩnh vực phát triển phần mềm. Cuốn sách này tập trung vào ý tưởng về việc viết mã sạch và linh hoạt, 
+                    làm thế nào để tạo ra mã nguồn dễ đọc, dễ hiểu và dễ bảo trì.</p>
+            </div>
+        </div>
+        <div class="row mt-5 table-of-contents">
+            <h2>Danh sách chương</h2>
+        </div>
+    </div>
+    <!-- Link JS của Bootstrap 5 (nếu cần) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script src="./web/server.js"></script>
+
+</html>
