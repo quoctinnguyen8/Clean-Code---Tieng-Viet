@@ -21,7 +21,7 @@
   --border-light:  #eeeeee;
 
   --topbar-h:      52px;
-  --sidebar-w:     240px;
+  --sidebar-w:     270px;
   --content-max:   720px;
 
   --radius:        6px;
@@ -299,6 +299,7 @@ ul, ol {
   font-size: clamp(15.5px, 2.2vw, 17.5px);
   line-height: 1.85;
   color: var(--text);
+  overflow-wrap: anywhere;
 }
 
 #content-markdown h1 {
@@ -328,6 +329,15 @@ ul, ol {
 
 #content-markdown p {
   margin: 0 0 18px;
+}
+
+#content-markdown a,
+#content-markdown p,
+#content-markdown li,
+#content-markdown blockquote,
+#content-markdown td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 #content-markdown ul,
@@ -530,9 +540,17 @@ ul, ol {
   color: var(--text-muted);
   text-align: center;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
+#nav-chapter-info span,
 #nav-chapter-info strong {
   display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#nav-chapter-info strong {
   font-size: 14px;
   color: var(--text);
 }
@@ -560,6 +578,10 @@ ul, ol {
   color: var(--text-muted);
   font-weight: 500;
   transition: color var(--transition);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
 }
 #site-footer a:hover {
   color: var(--accent);
