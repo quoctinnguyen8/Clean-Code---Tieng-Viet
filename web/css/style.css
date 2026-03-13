@@ -99,20 +99,13 @@ img {
     display: block;
 }
 .pagination select {
-    background: url(../../image/select-mobile.png) no-repeat right #f0f0f0;
-    padding: 0 10px;
+    padding: 0 28px 0 10px;
     height: 34px;
-    width: 130px;
+    width: auto;
+    max-width: 260px;
     border: none;
     text-align: start;
-    -webkit-appearance: none;
     border-radius: 5px;
-    
-}
-.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
 }
 .header {
     padding: 10px 16px;
@@ -170,4 +163,18 @@ div#btn-fs button:hover{
 #content{
     font-size: 1rem;
     width: 100%;
+}
+
+/* Chuyển pagination xuống cuối trang trên mobile */
+@media (max-width: 710px) {
+    .pagination {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #f0f0f0;
+        padding: 10px 0;
+        z-index: 9999;
+    }
+
 }

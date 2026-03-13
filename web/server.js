@@ -12,7 +12,7 @@ var listFile = [
 		link: '/Markdown/Chaper03.md'
 	},
 	{
-		title: "Chương 4: CƠM-MỪN",
+		title: "Chương 4: COMMENT",
 		link: '/Markdown/Chaper04.md'
 	},
 	{
@@ -20,7 +20,7 @@ var listFile = [
 		link: '/Markdown/Chaper05.md'
 	},
 	{
-		title: "Chương 6: ĐỚI TƯỢNG VÀ CẤU TRÚC DỮ LIỆU",
+		title: "Chương 6: ĐỐI TƯỢNG VÀ CẤU TRÚC DỮ LIỆU",
 		link: '/Markdown/Chaper06.md'
 	},
 	{
@@ -51,16 +51,9 @@ $(document).ready(function () {
 	const urlParams = new URLSearchParams(window.location.search);
 	// list folder in select - option
 	listFile.forEach(function (file, index) {
-		if(urlParams.get('chapter') == index + 1 ){
-			var chapterTemplate = `
-				<option selected value="/index.html?chapter=${(getNumber(index + 1))}">Chương ${index + 1}</option>`;	
-		}
-		else{
-			var chapterTemplate = `
-				<option value="/index.html?chapter=${(getNumber(index + 1))}">Chương ${index + 1}</option>`;
-		}
+		var isSelected = urlParams.get('chapter') == index + 1;
+		var chapterTemplate = `<option ${isSelected ? 'selected' : ''} value="/index.html?chapter=${getNumber(index + 1)}">${file.title}</option>`;
 		$('.pagination select').append(chapterTemplate);
-	
 	});
 	let chapter = urlParams.get('chapter');
 	if ((chapter > listFile.length || chapter === null || chapter < 1)) {
@@ -73,11 +66,19 @@ $(document).ready(function () {
 		url: urlChapter,
 		type: 'GET',
 		success: function (response) {
-			$('#content-markdown').append(marked.parse(response));
+			$('#content-markdown').html(marked.parse(response));
+			// Khôi phục vị trí scroll đã lưu cho chương này
+			var savedScroll = localStorage.getItem('scrollPos_' + chapter);
+			if (savedScroll) window.scrollTo(0, parseInt(savedScroll));
 		},
 		error: function (xhr, status, error) {
+			$('#content-markdown').html('<p class="text-danger text-center py-5">Không tải được nội dung. Vui lòng thử lại.</p>');
 			console.error('Lỗi khi gửi yêu cầu:', error);
 		}
+	});
+	// Lưu vị trí scroll trước khi rời trang
+	window.addEventListener('beforeunload', function () {
+		localStorage.setItem('scrollPos_' + chapter, window.scrollY);
 	});
 	$('.next').on('click', function (ev) {
 		chapter = parseInt(chapter);

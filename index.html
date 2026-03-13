@@ -27,12 +27,19 @@
 			</ul>
 		</div>
 
-		<div class="bool-list" id="content" style="background-color: rgb(244, 244, 2444);">
+		<div class="bool-list" id="content">
 			<div class="container">
 				<!-- content chapter -->
 				<div id="j-content" class="col-xs-12">
 					<!-- full file md -->
-					<div class="content mt-2" id="content-markdown"></div>
+					<div class="content mt-2" id="content-markdown">
+						<div id="loading-spinner" class="text-center py-5">
+							<div class="spinner-border text-secondary" role="status">
+								<span class="visually-hidden">Đang tải...</span>
+							</div>
+							<p class="mt-2 text-muted">Đang tải nội dung...</p>
+						</div>
+					</div>
 				</div>
 			</div>z
 			<div id="btn-fs">
@@ -42,30 +49,28 @@
 		</div>
 	</body>
 	<script>
-		window.onscroll = function () { headerFixed() };
 		var header = document.getElementById("myHeader");
 		var sticky = header.offsetTop;
 
-		function headerFixed() {
-			if (window.pageYOffset > sticky) {
-				header.classList.add("sticky");
-			} else {
-				header.classList.remove("sticky");
-			}
-		}
-
 		function plusFs5px() {
-			txt = document.getElementById('content');
-			style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
-			currentSize = parseFloat(style);
-			currentSize + 5 > 40 ?txt.style.fontSize = 40 + 'px' :txt.style.fontSize = (currentSize + 5) + 'px';
+			var txt = document.getElementById('content');
+			var currentSize = parseFloat(window.getComputedStyle(txt, null).getPropertyValue('font-size'));
+			var newSize = currentSize + 5 > 40 ? 40 : currentSize + 5;
+			txt.style.fontSize = newSize + 'px';
+			localStorage.setItem('fontSize', newSize);
 		}
 		function dashFs5px() {
-			txt = document.getElementById('content');
-			style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
-			currentSize = parseFloat(style);
-			currentSize - 5 < 16 ? txt.style.fontSize = 16 + 'px' : txt.style.fontSize = (currentSize - 5) + 'px';
+			var txt = document.getElementById('content');
+			var currentSize = parseFloat(window.getComputedStyle(txt, null).getPropertyValue('font-size'));
+			var newSize = currentSize - 5 < 16 ? 16 : currentSize - 5;
+			txt.style.fontSize = newSize + 'px';
+			localStorage.setItem('fontSize', newSize);
 		}
+		// Khôi phục font size đã lưu
+		(function () {
+			var savedSize = localStorage.getItem('fontSize');
+			if (savedSize) document.getElementById('content').style.fontSize = savedSize + 'px';
+		})();
 	</script>
 	<script src="./web/server.js"></script>
 
