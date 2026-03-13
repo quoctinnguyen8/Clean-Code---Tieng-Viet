@@ -3,7 +3,7 @@
 Chương 01 ~ 06: [quoctinnguyen8](https://github.com/quoctinnguyen8/Clean-Code---Tieng-Viet)  
 Chương 07 ~ 11: [chukimmuoi](https://github.com/chukimmuoi/Clean-Code---Tieng-Viet)
 
-### Trang web đọc trực tuyến (đang phát triển): [https://cleancode.tinnq.com/](https://cleancode.tinnq.com/)
+### Trang web đọc trực tuyến: [https://cleancode.tinnq.com/](https://cleancode.tinnq.com/)
 
 Vui lòng ghi nguồn nếu bạn sử dụng lại bản dịch của mình cho blog của bạn
 
