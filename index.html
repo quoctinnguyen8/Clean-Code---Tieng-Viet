@@ -1,77 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="og:title" content="Clean Code Tiếng Việt" />
-		<meta name="og:description" content="Clean Code Tiếng Việt: Bản dịch một số chương đầu từ quyển 'Clean Code - A Handbook of Agile Software Craftsmanship' - Robert C. Martin et. al." />
-		<title></title>
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-		<link rel="stylesheet" href="./web/css/style.css">
-		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	</head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="og:title" content="Clean Code Tiếng Việt" />
+  <meta name="og:description" content="Clean Code Tiếng Việt: Bản dịch từ quyển 'Clean Code - A Handbook of Agile Software Craftsmanship' - Robert C. Martin." />
+  <title>Clean Code Tiếng Việt</title>
 
-	<body>
-		<div class="pagination header" id="myHeader">
-			<ul>
-				<li id="btn-previ" class="next" data-btn="back"><i class="bi bi-chevron-compact-left"></i>
-				</li>
-				<select id="info_chapter" onchange="if(this.value) window.location.href = this.value;">
-					<option value="">Chọn chương</option>
-				</select>
-				<li id="btn-next" class="next" data-btn="next"><i class="bi bi-chevron-compact-right"></i>
-				</li>
-			</ul>
-		</div>
+  <!-- highlight.js — syntax highlighting -->
+  <link rel="stylesheet" id="hljs-theme-light"
+    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+  <link rel="stylesheet" id="hljs-theme-dark"
+    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css"
+    disabled>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 
-		<div class="bool-list" id="content">
-			<div class="container">
-				<!-- content chapter -->
-				<div id="j-content" class="col-xs-12">
-					<!-- full file md -->
-					<div class="content mt-2" id="content-markdown">
-						<div id="loading-spinner" class="text-center py-5">
-							<div class="spinner-border text-secondary" role="status">
-								<span class="visually-hidden">Đang tải...</span>
-							</div>
-							<p class="mt-2 text-muted">Đang tải nội dung...</p>
-						</div>
-					</div>
-				</div>
-			</div>z
-			<div id="btn-fs">
-				<button class="btn btn-outline-secondary btn-dash" onclick="dashFs5px()"><i class="bi bi-dash-square"></i></button>
-				<button class="btn btn-outline-secondary btn-plus" onclick="plusFs5px()" ><i class="bi bi-plus-square"></i></button>
-			</div>
-		</div>
-	</body>
-	<script>
-		var header = document.getElementById("myHeader");
-		var sticky = header.offsetTop;
+  <!-- marked.js — markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-		function plusFs5px() {
-			var txt = document.getElementById('content');
-			var currentSize = parseFloat(window.getComputedStyle(txt, null).getPropertyValue('font-size'));
-			var newSize = currentSize + 5 > 40 ? 40 : currentSize + 5;
-			txt.style.fontSize = newSize + 'px';
-			localStorage.setItem('fontSize', newSize);
-		}
-		function dashFs5px() {
-			var txt = document.getElementById('content');
-			var currentSize = parseFloat(window.getComputedStyle(txt, null).getPropertyValue('font-size'));
-			var newSize = currentSize - 5 < 16 ? 16 : currentSize - 5;
-			txt.style.fontSize = newSize + 'px';
-			localStorage.setItem('fontSize', newSize);
-		}
-		// Khôi phục font size đã lưu
-		(function () {
-			var savedSize = localStorage.getItem('fontSize');
-			if (savedSize) document.getElementById('content').style.fontSize = savedSize + 'px';
-		})();
-	</script>
-	<script src="./web/server.js"></script>
+  <!-- App styles -->
+  <link rel="stylesheet" href="./web/css/style.css">
+</head>
+
+<body>
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Topbar -->
+  <header id="topbar">
+    <div id="topbar-left">
+      <button id="btn-menu" aria-label="Mở mục lục">
+        <i class="bi bi-list"></i>
+      </button>
+      <span id="site-title"><i class="bi bi-book-half" style="color:var(--accent)"></i> Clean Code</span>
+    </div>
+    <div id="topbar-right">
+      <button class="topbar-btn" id="btn-dark" aria-label="Toggle dark mode">
+        <i class="bi bi-moon"></i> <span>Dark</span>
+      </button>
+      <button class="topbar-btn" id="btn-font-sm" aria-label="Giảm cỡ chữ">
+        <i class="bi bi-type-h3"></i> <span>A-</span>
+      </button>
+      <button class="topbar-btn" id="btn-font-lg" aria-label="Tăng cỡ chữ">
+        <i class="bi bi-type-h1"></i> <span>A+</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div id="sidebar-overlay"></div>
+
+  <!-- App shell -->
+  <div id="app">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <div class="sidebar-section-title">Các chương</div>
+      <div id="sidebar-chapters"></div>
+      <div class="sidebar-toc">
+        <div class="sidebar-section-title">Trong chương này</div>
+        <div id="sidebar-toc"></div>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main id="main">
+      <div id="content-wrap">
+        <article id="content-markdown">
+          <!-- Loading spinner -->
+          <div id="loading-spinner">
+            <div class="spinner-ring"></div>
+            <span>Đang tải nội dung...</span>
+          </div>
+        </article>
+
+        <!-- Chapter navigation (desktop) -->
+        <nav id="chapter-nav">
+          <button class="nav-btn" id="btn-prev">
+            <i class="bi bi-arrow-left-short"></i> Chương trước
+          </button>
+          <div id="nav-chapter-info">
+            <span id="nav-chapter-count"></span>
+            <strong id="nav-chapter-title"></strong>
+          </div>
+          <button class="nav-btn" id="btn-next">
+            Chương sau <i class="bi bi-arrow-right-short"></i>
+          </button>
+        </nav>
+
+        <!-- Footer -->
+        <footer id="site-footer">
+          <span>Bản dịch tiếng Việt của
+            <em>Clean Code &mdash; Robert C. Martin</em>
+          </span>
+          <a href="https://github.com/quoctinnguyen8/Clean-Code---Tieng-Viet"
+             target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-github"></i> quoctinnguyen8/Clean-Code---Tieng-Viet
+          </a>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bottom nav (mobile) -->
+  <nav id="bottom-nav">
+    <button class="bottom-nav-btn" id="btn-prev-mobile">
+      <i class="bi bi-chevron-left"></i> Trước
+    </button>
+    <span id="bottom-nav-info"></span>
+    <button class="bottom-nav-btn" id="btn-next-mobile">
+      Sau <i class="bi bi-chevron-right"></i>
+    </button>
+  </nav>
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- App scripts -->
+  <script src="./web/js/toc.js"></script>
+  <script src="./web/js/app.js"></script>
+</body>
 
 </html>
